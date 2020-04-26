@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Patronus Quiz</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <link rel="stylesheet" href="/style.css">
+        <link rel="stylesheet" href="/patronus-quiz/quiz.css">
+        <link href="https://fonts.googleapis.com/css2?family=Merienda&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+        <script type="module" src="quiz.js"></script>
+    </head>
+    <body>
+        <div class="wrapper">
+            <main>
+                <section data-first>
+                    <h1>Choose your Patronus!</h1>
+                    <div class="image-display">
+                        <img width="350" height="350" src="/patronus-quiz/background.png">
+                        <p class="attribution">
+                            <a href="https://www.sketchport.com/drawing/3279029/boo">
+                                Boo!</a>
+                            by
+                            <a href="https://www.sketchport.com/user/1148026/aya-mulder">
+                                Aya Mulder</a>
+                            is licensed under
+                            <a href="https://creativecommons.org/licenses/by/4.0/?ref=ccsearch&atype=html">
+                                CC-BY 2.0</a>. <i>Cropped from original</i>
+                        </p>
+                    </div>
+                    <p>Answer the questions to find your Patronus animal!</p>
+                    <button class="next">Click to begin!</button>
+                </section>
+            </main>
+            <footer>
+                Created 2020 by Nathan Moos for the Salt Lake County Library System.
+            </footer>
+        </div>
+
+        <template id="question-card">
+            <section data-question>
+                <div class="image-display">
+                    <img width="350" height="350" src="">
+                    <p class="attribution"></p>
+                </div>
+                <div class="question-and-answer">
+                    <h3 class="questionTitle">
+                        Question?
+                    </h3>
+                    <ul class="choice">
+                    </ul>
+                    <button class="next" disabled>Next</button>
+                </div>
+            </section>
+        </template>
+        <template id="answer">
+            <li>
+                <input type="radio" id="" name="q">
+                <label for="">
+                    <!-- Text will be filled in -->
+                </label>
+            </li>
+        </template>
+        <template id="end-of-game">
+            <section data-end>
+                <h1>Your Patronus is...</h1>
+                <div class="image-display">
+                    <img width="450" height="450" src="">
+                    <p class="attribution"></p>
+                </div>
+                <p class="text">
+                    <!-- Text will be filled in -->
+                </p>
+                <button>Play again!</button>
+            </section>
+        </template>
+        <template id="attribution">
+            <a href=""></a>
+            by
+            <a href=""></a>
+            is licensed under
+            <a href=""></a>.
+            <i></i>
+        </template>
+    </body>
+</html>
