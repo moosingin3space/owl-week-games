@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Dueling Club!</title>
+        <link rel="stylesheet" href="/style.css">
+        <link rel="stylesheet" href="/dueling-club/game.css">
+        <link rel="stylesheet" href="/dueling-club/assets.css">
+        <link href="https://fonts.googleapis.com/css2?family=Merienda&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+        <script type="module" src="/dueling-club/game.js"></script>
+    </head>
+    <body>
+        <div class="wrapper">
+            <main>
+                <section class="gamescreen opening" data-opening>
+                    <div class="lowerText">
+                        <h3>Dueling Club</h3>
+                        <button>Click to play!</button>
+                    </div>
+                </section>
+            </main>
+            <footer>
+                Created 2020 by Nathan Moos for the Salt Lake County Library System.
+            </footer>
+        </div>
+
+        <template id="character-selection">
+            <section class="gamescreen field">
+                <div class="character-carousel">
+                    <div class="character-carousel-inner">
+                    </div>
+                </div>
+                <div class="lowerText">
+                    <h4>Choose your character from the above choices</h4>
+                </div>
+            </section>
+        </template>
+
+        <template id="character">
+            <div class="character">
+                <button>Pick me!</button>
+            </div>
+        </template>
+
+        <template id="fight">
+            <section class="gamescreen field">
+                <div class="duel">
+                    <div class="character">
+                    </div>
+                    <div class="character opponent">
+                    </div>
+                </div>
+                <div class="books">
+                </div>
+            </section>
+        </template>
+
+        <template id="book">
+            <div class="book">
+                <span class="spell-name"></span>
+                <span class="spell-description"></span>
+            </div>
+        </template>
+    </body>
+</html>

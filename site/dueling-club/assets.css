@@ -1,0 +1,17 @@
+.character {
+    background-size: 167px 300px;
+    width: 167px;
+    height: 300px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.gryffindor-boy, .gryffindor-girl, 
+.slytherin-boy, .slytherin-girl,
+.hufflepuff-boy, .hufflepuff-girl,
+.ravenclaw-boy, .ravenclaw-girl {
+    background-image: url(/dueling-club/indian-boy-smile.png);
+}

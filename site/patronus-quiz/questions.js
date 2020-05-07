@@ -1,7 +1,7 @@
 export default {
     'questions': [
         {
-            'title': "If you were being followed by an unknown hooded figure, you would:",
+            'title': "You are being followed by a hooded stranger, you:",
             'image': '/patronus-quiz/hoodie.jpg',
             'attribution': {
                 'title': '194/365 Hoodie',

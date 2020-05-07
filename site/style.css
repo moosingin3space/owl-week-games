@@ -82,3 +82,9 @@ button:disabled:hover {
     color: white;
     cursor: unset;
 }
+
+@media (min-width: 1000px) {
+    .wrapper {
+        max-width: 1200px;
+    }
+}
