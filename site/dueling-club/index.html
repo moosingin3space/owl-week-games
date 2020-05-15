@@ -30,9 +30,10 @@
                     <div class="character-carousel-inner">
                     </div>
                 </div>
-                <div class="lowerText">
-                    <h4>Choose your character from the above choices</h4>
-                </div>
+                <div class="spacer"></div>
+                <span class="instructions">
+                    Choose your character from the above options.
+                </span>
             </section>
         </template>
 
@@ -46,20 +47,65 @@
             <section class="gamescreen field">
                 <div class="duel">
                     <div class="character">
+                        <div class="hp-bar">
+                            <label for="user-hp">HP:</label>
+                            <progress id="user-hp" value="" max="100"></progress>
+                        </div>
+                        <div id="user-effect" class="effect">
+                        </div>
+                    </div>
+                    <div class="explanation">
+                        <span id="my-spell"></span>
+                        <span id="my-what-happened"></span>
+                    </div>
+                    <div class="spacer"></div>
+                    <div class="explanation opponent">
+                        <span id="opp-spell"></span>
+                        <span id="opp-what-happened"></span>
                     </div>
                     <div class="character opponent">
+                        <div class="hp-bar">
+                            <label for="opp-hp">HP:</label>
+                            <progress id="opp-hp" value="" max="100"></progress>
+                        </div>
+                        <div id="opp-effect" class="effect">
+                        </div>
                     </div>
                 </div>
+                <div class="spacer"></div>
+                <span class="instructions">
+                    Choose a spell from one of the books below. Hover over the
+                    book to see what the spell does!
+                </span>
                 <div class="books">
+                    <div class="books-inner">
+                    </div>
                 </div>
             </section>
         </template>
 
         <template id="book">
             <div class="book">
-                <span class="spell-name"></span>
-                <span class="spell-description"></span>
+                <div class="details">
+                    <button class="cast-spell">
+                    </button>
+                </div>
             </div>
+        </template>
+
+        <template id="final-screen">
+            <section class="gamescreen field">
+                <div class="duel">
+                    <div id="winner" class="character">
+                    </div>
+                    <div class="spacer"></div>
+                    <div id="loser" class="character">
+                    </div>
+                </div>
+                <div class="spacer"></div>
+                <span class="instructions"></span>
+                <button>Play again!</button>
+            </section>
         </template>
     </body>
 </html>

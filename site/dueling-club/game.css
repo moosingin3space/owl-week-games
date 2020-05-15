@@ -26,10 +26,17 @@ main {
     justify-content: flex-end;
 }
 
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
 .field {
-    background-color: #111111;
+    background-image: url(/dueling-club/dueling-field.png);
     display: flex;
     flex-direction: column;
+
+    animation: fadein 1s;
 }
 
 .lowerText {
@@ -47,25 +54,28 @@ h3 {
 }
 
 .character-carousel {
+    width: 100%;
     max-width: 100%;
     height: 400px;
-    overflow-x: scroll;
+    overflow-x: hidden;
     overflow-y: hidden;
 }
 
 .character-carousel-inner {
+    width: 100%;
     height: 100%;
 
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: center;
+    justify-content: center;
     white-space: nowrap;
 
     transition: 450ms transform;
 }
 
-.character {
+.character-carousel .character {
     position: relative;
     display: inline-block;
     transition: 450ms all;
@@ -87,7 +97,7 @@ h3 {
     opacity: 1;
 }
 
-.character:hover ~ .character {
+.character-carousel .character:hover ~ .character {
     transform: translate3d(83.5px, 0, 0);
 }
 
@@ -97,4 +107,177 @@ h3 {
 
 .character-carousel .character:hover > button {
     visibility: visible;
+}
+
+.character-carousel .character {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.duel {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.duel .character {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.character .effect {
+    align-self: center;
+    color: white;
+    text-shadow: black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px;
+}
+
+.duel .character .hp-bar {
+    margin: 3px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: stretch;
+    color: white;
+}
+
+.hp-bar > progress {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    min-width: 0;
+}
+
+.hp-bar > progress,
+.hp-bar > progress[role][aria-valuenow] {
+    background: #cccccc !important;
+}
+
+.hp-bar > progress::-webkit-progress-bar {
+    background: #cccccc;
+}
+
+.hp-bar > progress::-moz-progress-bar,
+.hp-bar > progress::-webkit-progress-value,
+.hp-bar > progress[aria-valuenow]:before {
+    background: #0000aa;
+}
+
+.books {
+    width: 100%;
+    max-width: 100%;
+    height: 200px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+.books-inner {
+    height: 100%;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+
+    transition: 450ms transform;
+}
+
+.book {
+    position: relative;
+    display: inline-block;
+    transition: 450ms all;
+    transform-origin: center;
+    flex-shrink: 0;
+    box-sizing: border-box;
+
+    background-image: url(/dueling-club/book.png);
+    background-size: 125px 80px;
+    width: 125px;
+    height: 80px;
+}
+
+.books-inner.dueling .book {
+    opacity: .3;
+}
+
+.books-inner:hover .book {
+    opacity: .3;
+}
+
+.books-inner:not(.dueling):hover .book:hover {
+    transform: scale(1.5);
+    opacity: 1;
+}
+
+.details {
+    width: 100%;
+    height: 100%;
+    color: white;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.book > .details {
+    visibility: hidden;
+}
+
+.books-inner:not(.dueling) .book:hover > .details {
+    visibility: visible;
+}
+
+button.cast-spell {
+    background-color: green;
+    border: none;
+    color: white;
+    padding: 5px 3px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+}
+
+button.cast-spell:hover {
+    background-color: lightgreen;
+    color: black;
+    cursor: pointer;
+}
+
+button.cast-spell:disabled {
+    background-color: #333333;
+}
+
+button.cast-spell:disabled:hover {
+    color: white;
+    cursor: unset;
+}
+
+.spacer {
+    flex-shrink: 0;
+    flex-grow: 1;
+}
+
+.instructions {
+    margin-top: 1em;
+    text-align: center;
+    color: white;
+    text-shadow: black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px;
+    font-size: 1.1rem;
+}
+
+.explanation {
+    display: flex;
+    flex-direction: column;
+}
+
+.gamescreen > button {
+    margin-bottom: 0.5em;
 }

@@ -1,17 +1,39 @@
 .character {
+    background-position-y: 25px;
+    background-repeat: no-repeat;
     background-size: 167px 300px;
     width: 167px;
-    height: 300px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    height: 325px;
 }
 
-.gryffindor-boy, .gryffindor-girl, 
-.slytherin-boy, .slytherin-girl,
-.hufflepuff-boy, .hufflepuff-girl,
-.ravenclaw-boy, .ravenclaw-girl {
-    background-image: url(/dueling-club/indian-boy-smile.png);
+.harry {
+    background-image: url(/dueling-club/harry-left.png);
+}
+
+.harry.opponent {
+    background-image: url(/dueling-club/harry-right.png);
+}
+
+.malfoy {
+    background-image: url(/dueling-club/malfoy-left.png);
+}
+
+.malfoy.opponent {
+    background-image: url(/dueling-club/malfoy-right.png);
+}
+
+.redhead {
+    background-image: url(/dueling-club/redhead-left.png);
+}
+
+.redhead.opponent {
+    background-image: url(/dueling-club/redhead-right.png);
+}
+
+.brunette-girl {
+    background-image: url(/dueling-club/brunette-girl-left.png);
+}
+
+.brunette-girl.opponent {
+    background-image: url(/dueling-club/brunette-girl-right.png);
 }
