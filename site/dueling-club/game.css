@@ -33,7 +33,7 @@ main {
 }
 
 .opening {
-    background-image: url(/dueling-club/opening.jpg);
+    background-image: url(/dueling-club/opening.png);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
