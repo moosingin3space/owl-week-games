@@ -37,3 +37,27 @@
 .brunette-girl.opponent {
     background-image: url(/dueling-club/brunette-girl-right.png);
 }
+
+.poc-1 {
+    background-image: url(/dueling-club/poc-1-left.png);
+}
+
+.poc-1.opponent {
+    background-image: url(/dueling-club/poc-1-right.png);
+}
+
+.poc-2 {
+    background-image: url(/dueling-club/poc-2-left.png);
+}
+
+.poc-2.opponent {
+    background-image: url(/dueling-club/poc-2-right.png);
+}
+
+.asian {
+    background-image: url(/dueling-club/asian-left.png);
+}
+
+.asian.opponent {
+    background-image: url(/dueling-club/asian-right.png);
+}

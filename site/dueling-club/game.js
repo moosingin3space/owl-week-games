@@ -61,6 +61,7 @@ function resetGame() {
 function displayCharSelector() {
     const clone = characterSelection.content.cloneNode(true);
     const carousel = clone.querySelector(".character-carousel-inner");
+    const scrollButtons = clone.querySelectorAll(".scroller");
     for (const character of Characters) {
         const characterElt = characterTempl.content.cloneNode(true);
         const div = characterElt.querySelector("div.character");
@@ -69,6 +70,23 @@ function displayCharSelector() {
         carousel.appendChild(characterElt);
         button.addEventListener('click', () => selectedCharacter(character));
     }
+
+    scrollButtons[0].addEventListener('click', () => {
+        if (!carousel.classList.contains("push-right")) {
+            carousel.classList.add("push-left");
+            scrollButtons[0].setAttribute("disabled", "disabled");
+        }
+        carousel.classList.remove("push-right");
+        scrollButtons[1].removeAttribute("disabled");
+    });
+    scrollButtons[1].addEventListener('click', () => {
+        if (!carousel.classList.contains("push-left")) {
+            carousel.classList.add("push-right");
+            scrollButtons[1].setAttribute("disabled", "disabled");
+        }
+        carousel.classList.remove("push-left");
+        scrollButtons[0].removeAttribute("disabled");
+    });
 
     const child = mainElt.querySelector("section");
     mainElt.replaceChild(clone, child);

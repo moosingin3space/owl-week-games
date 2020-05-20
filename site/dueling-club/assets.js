@@ -59,10 +59,12 @@ const Books = {
 
 const Characters = [
     'harry',
+    'poc-1',
     'brunette-girl',
-    
     'malfoy',
+    'poc-2',
     'redhead',
+    'asian'
 ];
 
 const Effects = {
