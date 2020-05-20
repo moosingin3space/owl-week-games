@@ -18,6 +18,10 @@ main {
         height: 760px;
     }
 
+    .gamescreen.field {
+        justify-content: space-around;
+    }
+
     .scroller {
         display: none;
     }
@@ -289,8 +293,9 @@ button.cast-spell:disabled:hover {
     margin-top: 1em;
     text-align: center;
     color: white;
-    text-shadow: black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px;
-    font-size: 1.1rem;
+    text-shadow: black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px,
+                 black 0px 0px 1px, black 0px 0px 1px, black 0px 0px 1px;
+    font-size: 1.5rem;
 }
 
 .explanation {
