@@ -151,6 +151,8 @@ h3 {
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
+
+    flex-shrink: 0;
 }
 
 .character .effect {
@@ -298,9 +300,55 @@ button.cast-spell:disabled:hover {
     font-size: 1.5rem;
 }
 
+@keyframes slide-in-from-left {
+    from {
+        transform: translateX(-40%);
+    }
+
+    to {
+        transform: translateX(0%);
+    }
+}
+
+@keyframes slide-in-from-right {
+    from {
+        transform: translateX(40%);
+    }
+
+    to {
+        transform: translateX(0%);
+    }
+}
+
+.duel-description.new {
+    animation: slide-in-from-left 450ms ease-in;
+}
+
+.duel-description.end {
+    transform: translateY(-500%);
+}
+
+.opponent .duel-description.new {
+    animation: slide-in-from-right 450ms ease-in;
+}
+
+.duel-description {
+    text-align: center;
+    border: 1px solid black;
+    background-color: yellowgreen;
+    color: black;
+    padding: 5px;
+    font-size: 1.2rem;
+
+    transition: transform 750ms;
+}
+
 .explanation {
+    margin: 0 15px;
     display: flex;
     flex-direction: column;
+    max-width: 200px;
+    overflow-x: hidden;
 }
 
 .gamescreen > button {

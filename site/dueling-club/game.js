@@ -130,11 +130,33 @@ function displayFight() {
 
 function selectedCharacter(charName) {
     gameState.character = charName;
-    const opponentChar = randUniform(0, Characters.length);
-    currentDuelState.opponent.character = Characters[opponentChar];
+    const otherCharacters = Characters.filter(c => c != charName);
+    const opponentChar = randUniform(0, otherCharacters.length);
+    currentDuelState.opponent.character = otherCharacters[opponentChar];
     resetDueler(currentDuelState.player);
     resetDueler(currentDuelState.opponent);
     displayFight();
+}
+
+function showMessage(explElt, msg) {
+    const newElt = document.createElement("span");
+    newElt.classList.add("duel-description");
+    newElt.classList.add("new");
+    newElt.textContent = msg;
+
+    const animationEndHandler = () => {
+        newElt.classList.remove("new");
+        setTimeout(() => {
+            newElt.removeEventListener('animationend', animationEndHandler);
+            newElt.classList.add("end");
+            newElt.addEventListener('transitionend', () => {
+                newElt.remove();
+            });
+        }, 1000);
+    };
+
+    newElt.addEventListener('animationend', animationEndHandler);
+    explElt.appendChild(newElt);
 }
 
 function castSpell(selection) {
@@ -143,21 +165,15 @@ function castSpell(selection) {
 
     const bookNames = Object.getOwnPropertyNames(Books);
     const oppSpell = randUniform(0, bookNames.length);
-    const myExpl = mainElt.querySelector("#my-what-happened");
-    const oppExpl = mainElt.querySelector("#opp-what-happened");
-    const mySpellExpl = mainElt.querySelector("#my-spell");
-    const oppSpellExpl = mainElt.querySelector("#opp-spell");
+    const [myExpl, oppExpl] = mainElt.querySelectorAll(".explanation")
 
-    myExpl.textContent = "";
-    oppExpl.textContent = "";
-
-    mySpellExpl.textContent = selection.name;
-    oppSpellExpl.textContent = Books[bookNames[oppSpell]].name;
+    showMessage(myExpl, `You cast ${selection.name}`);
+    showMessage(oppExpl, `Opponent casts ${Books[bookNames[oppSpell]].name}`);
 
     setTimeout(() => {
         // TODO display animations
         resolveDuel(selection, Books[bookNames[oppSpell]]);
-    }, 450);
+    }, 600);
 }
 
 function resolveDuel(mySpell, oppSpell) {
@@ -165,15 +181,14 @@ function resolveDuel(mySpell, oppSpell) {
     const oppHpBar = mainElt.querySelector("#opp-hp");
     const userEffect = mainElt.querySelector("#user-effect");
     const oppEffect = mainElt.querySelector("#opp-effect");
-    const myExpl = mainElt.querySelector("#my-what-happened");
-    const oppExpl = mainElt.querySelector("#opp-what-happened");
+    const [myExpl, oppExpl] = mainElt.querySelectorAll(".explanation");
 
     let myDamage = (currentDuelState.opponent.attack * oppSpell.offense)
                    - (currentDuelState.player.defense * mySpell.defense);
     const oppHits = weightedFlip(currentDuelState.opponent.accuracy);
     if (!oppHits) {
         myDamage = 0;
-        oppExpl.textContent = "Opponent missed!";
+        showMessage(oppExpl, "Opponent missed!");
     }
     
     let oppDamage = (currentDuelState.player.attack * mySpell.offense)
@@ -181,7 +196,7 @@ function resolveDuel(mySpell, oppSpell) {
     const iHit = weightedFlip(currentDuelState.player.accuracy);
     if (!iHit) {
         oppDamage = 0;
-        myExpl.textContent = "You missed!";
+        showMessage(myExpl, "You missed!");
     }
 
     // Clamp damage
@@ -195,11 +210,15 @@ function resolveDuel(mySpell, oppSpell) {
     currentDuelState.player.hp -= myDamage;
     currentDuelState.opponent.hp -= oppDamage;
 
-    if (myDamage == 0 && oppExpl.textContent == "") {
-        oppExpl.textContent = "Opponent did no damage.";
+    if (myDamage == 0 && oppHits) {
+        showMessage(oppExpl, "Opponent did no damage!");
+    } else if (oppHits) {
+        showMessage(oppExpl, "Opponent hits!");
     }
-    if (oppDamage == 0 && myExpl.textContent == "") {
-        myExpl.textContent = "You did no damage.";
+    if (oppDamage == 0 && iHit) {
+        showMessage(myExpl, "You did no damage!");
+    } else if (iHit) {
+        showMessage(myExpl, "You hit!");
     }
 
     // Clamp HP
@@ -251,7 +270,7 @@ function resolveDuel(mySpell, oppSpell) {
         }
     }
 
-    setTimeout(nextRound, 450);
+    setTimeout(nextRound, 1500);
 }
 
 function nextRound() {
