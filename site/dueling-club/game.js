@@ -152,7 +152,7 @@ function showMessage(explElt, msg) {
             newElt.addEventListener('transitionend', () => {
                 newElt.remove();
             });
-        }, 1000);
+        }, 2000); // this timeout is the amount of time the message should be visible
     };
 
     newElt.addEventListener('animationend', animationEndHandler);
@@ -173,7 +173,7 @@ function castSpell(selection) {
     setTimeout(() => {
         // TODO display animations
         resolveDuel(selection, Books[bookNames[oppSpell]]);
-    }, 600);
+    }, 600); // this timeout is the wand animation duration
 }
 
 function resolveDuel(mySpell, oppSpell) {
@@ -235,7 +235,7 @@ function resolveDuel(mySpell, oppSpell) {
     syncHp(userHpBar, oppHpBar);
 
     if (duelEnded) {
-        setTimeout(displayFinal, 1500);
+        setTimeout(displayFinal, 2750);
         return;
     }
 
@@ -270,7 +270,7 @@ function resolveDuel(mySpell, oppSpell) {
         }
     }
 
-    setTimeout(nextRound, 1500);
+    setTimeout(nextRound, 2750);
 }
 
 function nextRound() {
@@ -285,8 +285,8 @@ function nextRound() {
 function displayFinal() {
     const clone = finalTempl.content.cloneNode(true);
     const winnerElt = clone.querySelector("#winner");
-    const loserElt = clone.querySelector("#loser");
-    const instrs = clone.querySelector(".instructions");
+    //const loserElt = clone.querySelector("#loser");
+    const instrs = clone.querySelector("h3");
     const button = clone.querySelector("button");
 
     if (currentDuelState.player.hp == 0) {
@@ -296,11 +296,11 @@ function displayFinal() {
             instrs.textContent = "Your opponent has won!";
         }
         winnerElt.classList.add(currentDuelState.opponent.character);
-        loserElt.classList.add(gameState.character);
+        //loserElt.classList.add(gameState.character);
     } else {
         instrs.textContent = "You won!";
         winnerElt.classList.add(gameState.character);
-        loserElt.classList.add(currentDuelState.opponent.character);
+        //loserElt.classList.add(currentDuelState.opponent.character);
     }
 
     button.addEventListener('click', resetGame);

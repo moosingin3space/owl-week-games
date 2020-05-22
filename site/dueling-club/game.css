@@ -22,6 +22,10 @@ main {
         justify-content: space-around;
     }
 
+    .gamescreen > h3 {
+        font-size: 3.4rem;
+    }
+
     .scroller {
         display: none;
     }
@@ -61,9 +65,10 @@ main {
 }
 
 h3 {
-    font-size: 2rem;
+    color: white;
+    font-size: 3.4rem;
     font-family: 'Merienda', cursive;
-    margin-bottom: 0.1em;
+    margin-bottom: 0.3em;
 }
 
 .character-carousel-outer {
@@ -302,7 +307,7 @@ button.cast-spell:disabled:hover {
 
 @keyframes slide-in-from-left {
     from {
-        transform: translateX(-40%);
+        transform: translateX(-100%);
     }
 
     to {
@@ -312,7 +317,7 @@ button.cast-spell:disabled:hover {
 
 @keyframes slide-in-from-right {
     from {
-        transform: translateX(40%);
+        transform: translateX(100%);
     }
 
     to {
@@ -353,4 +358,12 @@ button.cast-spell:disabled:hover {
 
 .gamescreen > button {
     margin-bottom: 0.5em;
+}
+
+.victory {
+    justify-content: center;
+}
+
+.gamescreen > h3 {
+    font-size: 2rem;
 }
