@@ -55,8 +55,10 @@
                 <div class="duel">
                     <div class="character">
                         <div class="hp-bar">
-                            <label for="user-hp">HP:</label>
-                            <progress id="user-hp" value="" max="100"></progress>
+                            <label>HP:</label>
+                            <div class="health-bar">
+                                <div class="current-health" id="user-hp"></div>
+                            </div>
                         </div>
                         <div id="user-effect" class="effect">
                         </div>
@@ -68,8 +70,10 @@
                     </div>
                     <div class="character opponent">
                         <div class="hp-bar">
-                            <label for="opp-hp">HP:</label>
-                            <progress id="opp-hp" value="" max="100"></progress>
+                            <label>HP:</label>
+                            <div class="health-bar">
+                                <div class="current-health" id="opp-hp"></div>
+                            </div>
                         </div>
                         <div id="opp-effect" class="effect">
                         </div>
@@ -101,9 +105,6 @@
                 <div class="duel victory">
                     <div id="winner" class="character">
                     </div>
-                    <!--<div class="spacer"></div>
-                    <div id="loser" class="character">
-                    </div>-->
                 </div>
                 <h3></h3>
                 <button>Play again!</button>

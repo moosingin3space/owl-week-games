@@ -106,8 +106,8 @@ function createBooksSelector(booksElt) {
 }
 
 function syncHp(userHpBar, oppHpBar) {
-    userHpBar.value = currentDuelState.player.hp;
-    oppHpBar.value = currentDuelState.opponent.hp;
+    userHpBar.style.width = `${currentDuelState.player.hp|0}%`;
+    oppHpBar.style.width = `${currentDuelState.opponent.hp|0}%`;
 }
 
 function displayFight() {
@@ -285,7 +285,6 @@ function nextRound() {
 function displayFinal() {
     const clone = finalTempl.content.cloneNode(true);
     const winnerElt = clone.querySelector("#winner");
-    //const loserElt = clone.querySelector("#loser");
     const instrs = clone.querySelector("h3");
     const button = clone.querySelector("button");
 
@@ -296,11 +295,9 @@ function displayFinal() {
             instrs.textContent = "Your opponent has won!";
         }
         winnerElt.classList.add(currentDuelState.opponent.character);
-        //loserElt.classList.add(gameState.character);
     } else {
         instrs.textContent = "You won!";
         winnerElt.classList.add(gameState.character);
-        //loserElt.classList.add(currentDuelState.opponent.character);
     }
 
     button.addEventListener('click', resetGame);
