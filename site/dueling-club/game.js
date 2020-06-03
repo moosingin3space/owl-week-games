@@ -9,6 +9,11 @@ const finalTempl = document.querySelector("#final-screen");
 const mainElt = document.querySelector("main");
 const gameOpener = mainElt.querySelector("section[data-opening]").cloneNode(true);
 
+const soundCharacterSelection = document.querySelector("#sound-character-selection");
+const soundWand = document.querySelector("#sound-wand");
+const soundLoss = document.querySelector("#sound-loss");
+const soundWin = document.querySelector("#sound-win");
+
 let gameState = {
     character: null,
     wins: 0,
@@ -45,6 +50,8 @@ function resetDueler(dueler) {
 }
 
 function resetGame() {
+    soundWand.volume = 0.3;
+
     gameState.character = null;
     gameState.wins = 0;
     gameState.losses = 0;
@@ -90,6 +97,9 @@ function displayCharSelector() {
 
     const child = mainElt.querySelector("section");
     mainElt.replaceChild(clone, child);
+
+    soundCharacterSelection.currentTime = 0;
+    soundCharacterSelection.play();
 }
 
 function createBooksSelector(booksElt) {
@@ -129,6 +139,7 @@ function displayFight() {
 }
 
 function selectedCharacter(charName) {
+    soundCharacterSelection.pause();
     gameState.character = charName;
     const otherCharacters = Characters.filter(c => c != charName);
     const opponentChar = randUniform(0, otherCharacters.length);
@@ -174,6 +185,8 @@ function castSpell(selection) {
         vid.currentTime = 0;
         vid.play();
     }
+    soundWand.currentTime = 0;
+    soundWand.play();
 
     showMessage(myExpl, `You cast ${selection.name}`);
     showMessage(oppExpl, `Opponent casts ${Books[bookNames[oppSpell]].name}`);
@@ -296,22 +309,31 @@ function displayFinal() {
     const instrs = clone.querySelector("h3");
     const button = clone.querySelector("button");
 
+    let soundToPlay = null;
+
     if (currentDuelState.player.hp == 0) {
         if (currentDuelState.opponent.hp == 0) {
             instrs.textContent = "The duel results in a draw."
         } else {
             instrs.textContent = "Your opponent has won!";
+            soundToPlay = soundLoss;
         }
         winnerElt.classList.add(currentDuelState.opponent.character);
     } else {
         instrs.textContent = "You won!";
         winnerElt.classList.add(gameState.character);
+        soundToPlay = soundWin;
     }
 
     button.addEventListener('click', resetGame);
 
     const child = mainElt.querySelector("section");
     mainElt.replaceChild(clone, child);
+
+    if (soundToPlay) {
+        soundToPlay.currentTime = 0;
+        soundToPlay.play();
+    }
 }
 
 resetGame();
