@@ -34,6 +34,10 @@ main {
     .character-carousel-inner.push-right {
         transform: none !important;
     }
+
+    .explanation {
+        width: 200px;
+    }
 }
 
 .opening {
@@ -343,7 +347,6 @@ button.cast-spell:disabled:hover {
     display: flex;
     flex-direction: column;
     max-width: 200px;
-    width: 200px;
     overflow-x: hidden;
 }
 
