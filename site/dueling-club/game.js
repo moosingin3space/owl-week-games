@@ -167,13 +167,21 @@ function castSpell(selection) {
     const oppSpell = randUniform(0, bookNames.length);
     const [myExpl, oppExpl] = mainElt.querySelectorAll(".explanation")
 
+    const wands = mainElt.querySelector(".wands");
+    wands.classList.remove("hidden");
+    const videos = mainElt.querySelectorAll("video.wand");
+    for (const vid of videos) {
+        vid.currentTime = 0;
+        vid.play();
+    }
+
     showMessage(myExpl, `You cast ${selection.name}`);
     showMessage(oppExpl, `Opponent casts ${Books[bookNames[oppSpell]].name}`);
 
     setTimeout(() => {
-        // TODO display animations
+        wands.classList.add("hidden");
         resolveDuel(selection, Books[bookNames[oppSpell]]);
-    }, 600); // this timeout is the wand animation duration
+    }, 1400); // this timeout is the wand animation duration
 }
 
 function resolveDuel(mySpell, oppSpell) {
