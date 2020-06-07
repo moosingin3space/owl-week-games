@@ -46,10 +46,22 @@
             </footer>
         </div>
 
-        <audio id="sound-character-selection" src="/dueling-club/character-selection.ogg"></audio>
-        <audio id="sound-wand" src="/dueling-club/wand.ogg"></audio>
-        <audio id="sound-loss" src="/dueling-club/lose.ogg"></audio>
-        <audio id="sound-win" src="/dueling-club/win.ogg"></audio>
+        <audio id="sound-character-selection" preload>
+            <source src="/dueling-club/character-selection.ogg" type="audio/ogg">
+            <source src="/dueling-club/character-selection.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="sound-wand" preload>
+            <source src="/dueling-club/wand.ogg" type="audio/ogg">
+            <source src="/dueling-club/wand.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="sound-loss" preload>
+            <source src="/dueling-club/lose.ogg" type="audio/ogg">
+            <source src="/dueling-club/lose.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="sound-win" preload>
+            <source src="/dueling-club/win.ogg" type="audio/ogg">
+            <source src="/dueling-club/win.mp3" type="audio/mpeg">
+        </audio>
 
         <template id="character-selection">
             <section class="gamescreen field">
@@ -92,8 +104,8 @@
                     </div>
                     <div class="wands-container">
                         <div class="wands hidden">
-                            <video preload muted playsinline class="wand" src="/dueling-club/wand-faster.webm"></video>
-                            <video preload muted playsinline class="wand opponent" src="/dueling-club/wand-faster.webm"></video>
+                            <div id="user-wand" class="wand"></div>
+                            <div id="opp-wand" class="wand opponent"></div>
                         </div>
                         <div class="explanation">
                         </div>

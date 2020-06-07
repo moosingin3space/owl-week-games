@@ -170,6 +170,14 @@ function showMessage(explElt, msg) {
     explElt.appendChild(newElt);
 }
 
+function playWandAnimation(id) {
+    let wand = document.getElementById(id);
+    wand.style.animation = 'none';
+    wand.offsetHeight;
+    wand.style.animation = null;
+    wand.style.animationPlayState = 'running';
+}
+
 function castSpell(selection) {
     const booksElt = mainElt.querySelector(".books-inner");
     booksElt.classList.add("dueling");
@@ -180,11 +188,8 @@ function castSpell(selection) {
 
     const wands = mainElt.querySelector(".wands");
     wands.classList.remove("hidden");
-    const videos = mainElt.querySelectorAll("video.wand");
-    for (const vid of videos) {
-        vid.currentTime = 0;
-        vid.play();
-    }
+    playWandAnimation("user-wand");
+    playWandAnimation("opp-wand");
     soundWand.currentTime = 0;
     soundWand.play();
 
