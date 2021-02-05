@@ -1,10 +1,9 @@
-name = "slco-owl-games"
+name = "owl-week-games"
 type = "webpack"
-account_id = "0aca9680f60c2e96fb591a7a67a64e4a"
-workers_dev = true
-route = ""
-zone_id = ""
 
 [site]
 bucket = "./site"
 entry-point = "workers-site"
+
+[env.production]
+route = "owl.mooshq.xyz/*"
