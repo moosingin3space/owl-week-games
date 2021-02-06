@@ -7,3 +7,6 @@ entry-point = "workers-site"
 
 [env.production]
 route = "owl.mooshq.xyz/*"
+
+[env.beta]
+route = "owl-beta.mooshq.xyz/*"
