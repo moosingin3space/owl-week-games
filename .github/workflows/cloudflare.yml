@@ -7,7 +7,7 @@ on:
 jobs:
     build:
         runs-on: ubuntu-latest
-        name: Deploy Beta Cloudflare Worker
+        name: Deploy Production Cloudflare Worker
         steps:
             - uses: actions/checkout@v2.0.0
             - name: Deploy
