@@ -3,7 +3,7 @@ on:
     push:
 
 jobs:
-    deply-beta:
+    deploy-beta:
         if: github.ref == 'refs/heads/beta'
         runs-on: ubuntu-latest
         name: Deploy Beta Cloudflare Worker
