@@ -16,6 +16,10 @@ interface HasSend {
     send: (event: QuizEvent) => void;
 }
 
+interface MaybeHasClasses {
+    extraClasses?: Array<string>
+}
+
 type QuestionProps = {
     question: Question
     selectedAnswer: Answer | null
@@ -25,8 +29,22 @@ type ResultProps = {
     result: string
 }
 
-const Column : React.FC<{}> = ({children}) => (
-    <section className="flex flex-col items-center">
+const Column : React.FC<MaybeHasClasses> = ({extraClasses, children}) => {
+    let classes = ['flex', 'flex-col', 'items-center'];
+    if (extraClasses) {
+        for (const cl of extraClasses) {
+            classes.push(cl);
+        }
+    }
+    return (
+        <section className={classes.join(' ')}>
+            {children}
+        </section>
+    )
+}
+
+const QuestionRoot : React.FC<{}> = ({children}) => (
+    <section className="flex flex-col items-center justify-center md:flex-row">
         {children}
     </section>
 )
@@ -71,14 +89,16 @@ const StartPage : React.FC<HasSend> = ({send}) => {
 
 const QuestionPage : React.FC<HasSend & QuestionProps> = ({send, question, selectedAnswer}) => {
     return (
-        <Column>
-            <img src={question.image} width={350} height={350}/>
-            { question.attribution ? <Attribution {...question.attribution}/> : null }
+        <QuestionRoot>
             <Column>
+                <img src={question.image} width={450} height={450}/>
+                { question.attribution ? <Attribution {...question.attribution}/> : null }
+            </Column>
+            <Column extraClasses={["md:px-8 w-96 max-w-full"]}>
                 <h3 className="text-2xl">{question.title}</h3>
-                <ul>
+                <ul className="w-full">
                     {question.answers.map((answer) => {
-                        let classes = ['border-2', 'border-solid', 'rounded-md', 'border-black'];
+                        let classes = ['border-2', 'border-solid', 'rounded-md', 'border-black', 'w-full'];
                         if (answer == selectedAnswer) {
                             classes.push('bg-yellow-300')
                         } else {
@@ -91,7 +111,7 @@ const QuestionPage : React.FC<HasSend & QuestionProps> = ({send, question, selec
                                     checked={answer == selectedAnswer}
                                     className="hidden"
                                 />
-                                <label htmlFor={answer.point} className="inline-block w-full p-6">
+                                <label htmlFor={answer.point} className="inline-block w-full p-6 hover:cursor-pointer">
                                     {answer.text}
                                 </label>
                             </li>
@@ -100,7 +120,7 @@ const QuestionPage : React.FC<HasSend & QuestionProps> = ({send, question, selec
                 </ul>
                 <Button text="Next" onClick={() => send({ type: 'NEXT' })} enabled={selectedAnswer != null}/>
             </Column>
-        </Column>
+        </QuestionRoot>
     )
 }
 
@@ -109,13 +129,17 @@ const ResultPage : React.FC<HasSend & ResultProps> = ({send, result}) => {
     // TODO assert this being non-null
     const description = res ? res.text : "Error: couldn't compute a result!"
     return (
-        <Column>
-            <h3 className="text-2xl">Your Patronus is a {result}</h3>
-            <img src={res!.image} width={350} height={350}/>
-            { res!.attribution ? <Attribution {...res!.attribution}/> : null }
-            <p>{description}</p>
-            <Button text="Play again!" onClick={() => send({ type: 'AGAIN' })}/>
-        </Column>
+        <QuestionRoot>
+            <Column>
+                <h3 className="text-2xl">Your Patronus is a {result}</h3>
+                <img src={res!.image} width={450} height={450}/>
+                { res!.attribution ? <Attribution {...res!.attribution}/> : null }
+            </Column>
+            <Column extraClasses={["md:px-8 w-96 max-w-full"]}>
+                <p>{description}</p>
+                <Button text="Play again!" onClick={() => send({ type: 'AGAIN' })}/>
+            </Column>
+        </QuestionRoot>
     )
 }
 

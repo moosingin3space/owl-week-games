@@ -1,7 +1,7 @@
 module.exports = {
   siteMetadata: {
-    title: `Owl Week Games`,
-    description: `Games for the Salt Lake County Library System's Owl Week, a celebration of the popular Harry Potter novels.`,
+    title: `O.W.L. Camp Games`,
+    description: `Games for the Salt Lake County Library System's O.W.L. Camp, a celebration of the popular Harry Potter novels.`,
     author: `@moosingin3space`,
   },
   plugins: [
