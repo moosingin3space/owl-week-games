@@ -5,6 +5,7 @@ import { useMachine } from "@xstate/react"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import Button from "../components/button"
+import PercentageCircle from "../components/percentage-circle"
 
 import { duelingMachine, DuelingEvent, DuelingContext, Character, Stats, characters } from "../machines/dueling"
 
@@ -19,6 +20,7 @@ interface CharacterStats {
 
 const CharacterStatsDisplay: React.FC<CharacterStats> = ({ character, stats }) => (
     <div className="flex flex-col">
+        <PercentageCircle percentage={stats.hp}/>
         <div className="grid">
             <img src={`/dueling-club/${character?.name}-left.png`} width={400} height={400}
                 style={{ gridArea: "1/1" }}/>
@@ -26,7 +28,6 @@ const CharacterStatsDisplay: React.FC<CharacterStats> = ({ character, stats }) =
                 {stats.effect}
             </div>
         </div>
-        {/* TODO HP bar */}
         <div className="flex-grow"/>
         {/* TODO explanations */}
     </div>
