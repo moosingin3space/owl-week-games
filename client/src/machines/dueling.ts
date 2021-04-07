@@ -1,11 +1,8 @@
 import { Machine, assign } from 'xstate'
 import produce from 'immer'
 import { randUniform, weightedFlip } from './randomness'
-import { IGatsbyImageData } from "gatsby-plugin-image"
-import { useStaticQuery, graphql } from "gatsby"
 
 export interface Spell {
-    name: string
     display: string
     description: string
     offense: number
@@ -13,15 +10,68 @@ export interface Spell {
     effect: Effect | null
 }
 
-interface HasHeadshot {
-    headshot: IGatsbyImageData
-}
-
 export interface Character {
     name: string
 }
 
-export const spells : Array<Spell> = []; // TODO
+export const spells : Array<Spell> = [
+    {
+        display: 'Rictusempra',
+        description: 'Does damage to your opponent.',
+        offense: 1.8,
+        defense: 1.0,
+        effect: null,
+    },
+    {
+        display: 'Stupefy',
+        description: 'Damages your opponent and stuns them for one turn.',
+        offense: 1.5,
+        defense: 1.0,
+        effect: null,
+    },
+    {
+        display: 'Petrificus Totalis',
+        description: 'Binds your opponent.',
+        offense: 0,
+        defense: 1.0,
+        effect: { name: 'bound' },
+    },
+    {
+        display: 'Incarcerus',
+        description: 'Binds your opponent with ropes.',
+        offense: 1.0,
+        defense: 1.0,
+        effect: { name: 'bound' },
+    },
+    {
+        display: 'Expelliarmus',
+        description: 'Disarms your opponent for 4 turns.',
+        offense: 0,
+        defense: 0,
+        effect: { name: 'disarmed' },
+    },
+    {
+        display: 'Protego',
+        description: 'Increases your defenses this turn.',
+        offense: 0,
+        defense: 1.5,
+        effect: null,
+    },
+    {
+        display: 'Impedimenta',
+        description: 'Strikes and increases your defenses this turn.',
+        offense: 1.25,
+        defense: 1.5,
+        effect: null,
+    },
+    {
+        display: 'Levicorpus',
+        description: 'Flips your opponent for one turn.',
+        offense: 1.0,
+        defense: 1.0,
+        effect: { name: 'flipped' },
+    }
+];
 
 export const characters : Array<Character> = [
     { name: 'harry' },
@@ -67,6 +117,7 @@ interface DuelingStateSchema {
         spellResult: {};
         victory: {};
         defeat: {};
+        draw: {};
     }
 }
 
@@ -125,6 +176,10 @@ export const duelingMachine = Machine<DuelingContext, DuelingStateSchema, Duelin
         spellResult: {
             always: [
                 {
+                    cond: 'bothHpZero',
+                    target: 'draw',
+                },
+                {
                     cond: 'userHpZero',
                     target: 'defeat',
                 },
@@ -146,7 +201,12 @@ export const duelingMachine = Machine<DuelingContext, DuelingStateSchema, Duelin
             on: {
                 AGAIN: 'characterSelect',
             }
-        }
+        },
+        draw: {
+            on: {
+                AGAIN: 'characterSelect',
+            }
+        },
     }
 },
     {
@@ -186,7 +246,7 @@ export const duelingMachine = Machine<DuelingContext, DuelingStateSchema, Duelin
                     // TODO assert
                     return context;
                 }
-                let oppSpell = spells[randUniform(0, spells.length)];
+                const oppSpell = spells[randUniform(0, spells.length)];
                 return produce(context, draftContext => {
                     let myDamage = (context.opponent.attack * oppSpell.offense)
                                  - (context.player.defense * event.spell.defense);
@@ -217,6 +277,7 @@ export const duelingMachine = Machine<DuelingContext, DuelingStateSchema, Duelin
             }),
         },
         guards: {
+            bothHpZero: (context, _event) => context.player.hp <= 0 && context.opponent.hp <= 0,
             userHpZero: (context, _event) => context.player.hp <= 0,
             opponentHpZero: (context, _event) => context.opponent.hp <= 0,
         }

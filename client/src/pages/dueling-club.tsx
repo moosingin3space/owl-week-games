@@ -7,7 +7,7 @@ import SEO from "../components/seo"
 import Button from "../components/button"
 import PercentageCircle from "../components/percentage-circle"
 
-import { duelingMachine, DuelingEvent, DuelingContext, Character, Stats, characters } from "../machines/dueling"
+import { duelingMachine, DuelingEvent, DuelingContext, Character, Stats, characters, spells } from "../machines/dueling"
 
 interface HasSend {
     send: (event: DuelingEvent) => void;
@@ -33,24 +33,55 @@ const CharacterStatsDisplay: React.FC<CharacterStats> = ({ character, stats }) =
     </div>
 )
 
-const BattlefieldPage: React.FC<HasSend & DuelingContext> = ({player, opponent, character, opponentCharacter, send}) => (
-    <div className="flex flex-col">
-        <div className="grid">
-            <StaticImage src="../images/dueling-club/field.png" alt="Dueling field"
-                    placeholder="blurred" layout="fullWidth"
-                    style={{
-                        gridArea: "1/1",
-                    }}/>
-            <div className="flex flex-row relative"
-                    style={{
-                        gridArea: "1/1",
-                    }}>
-                <CharacterStatsDisplay character={character} stats={player}/>
-                <div className="flex-grow"/>
-                <CharacterStatsDisplay character={opponentCharacter} stats={opponent}/>
-            </div>
+interface Completion {
+    victor: Character | null
+    win: boolean
+}
+
+const CompletionPage: React.FC<Completion & HasSend> = ({victor, win, send}) => (
+    <div className="grid">
+        <StaticImage src="../images/dueling-club/field.png" alt="Dueling field"
+                placeholder="blurred" layout="fullWidth"
+                style={{
+                    gridArea: "1/1",
+                }}/>
+        <div className="flex flex-col relative items-center" style={{ gridArea: "1/1" }}>
+            {victor ? <img src={`/dueling-club/${victor.name}-left.png`} width={400} height={400} style={{maxWidth: "70%"}}/> : <span/>}
+            <span className="text-xl text-center text-white">
+                { victor ? (win ? "You won!" : "Your opponent has won!") : "The duel results in a draw." }
+            </span>
+            <Button text={"Play again!"} onClick={() => send({ type: "AGAIN" })}/>
         </div>
-        {/* TODO spells */}
+    </div>
+)
+
+const BattlefieldPage: React.FC<HasSend & DuelingContext> = ({player, opponent, character, opponentCharacter, send}) => (
+    <div className="grid">
+        <StaticImage src="../images/dueling-club/field.png" alt="Dueling field"
+                placeholder="blurred" layout="fullWidth"
+                style={{
+                    gridArea: "1/1",
+                }}/>
+        <div className="flex flex-row relative"
+                style={{
+                    gridArea: "1/1",
+                }}>
+            <CharacterStatsDisplay character={character} stats={player}/>
+            <div className="flex-grow"/>
+            <CharacterStatsDisplay character={opponentCharacter} stats={opponent}/>
+        </div>
+        <div className="flex flex-col" style={{ gridArea: "2/1" }}>
+            {spells.map(spell => (
+                <div className="flex flex-row w-full border border-black p-2 justify-between items-center bg-gray-300">
+                    <div style={{ width: 256, height: 256, backgroundColor: "gray", border: "1px solid black" }}/>
+                    <div className="flex flex-col items-center">
+                        <span className="text-xl text-center">{spell.display}</span>
+                        <span className="text-sm text-center">{spell.description}</span>
+                    </div>
+                    <Button text={"Cast"} onClick={() => send({ type: "CAST_SPELL", spell })}/>
+                </div>
+            ))}
+        </div>
     </div>
 )
 
@@ -73,7 +104,7 @@ const CharacterSelectPage: React.FC<HasSend> = ({send}) => (
             }}/>
         <div className="flex flex-col items-center relative p-4"
             style={{
-                gridArea: "1/1",
+                gridArea: "1/1/span 2",
             }}>
             <span className="text-3xl text-white">
                 Choose your character from the list.
@@ -115,10 +146,13 @@ const DuelingClubPage : React.FC<{}> = () => {
     } else if (current.matches('battle')) {
         component = <BattlefieldPage send={send} {...current.context}/>;
     } else if (current.matches('victory')) {
-        // draw victory
+        component = <CompletionPage send={send} victor={current.context.character} win={true}/>;
     } else if (current.matches('defeat')) {
-        // draw defeat
+        component = <CompletionPage send={send} victor={current.context.opponentCharacter} win={false}/>;
+    } else if (current.matches('draw')) {
+        component = <CompletionPage send={send} victor={null} win={false}/>;
     }
+
     return (
         <Layout>
             <SEO title="Dueling Club" />
