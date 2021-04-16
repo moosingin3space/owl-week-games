@@ -17,3 +17,16 @@ body {
 a {
     color: #0077aa;
 }
+
+@layer base {
+    #___gatsby,
+    #gatsby-focus-wrapper {
+        @apply h-full;
+    }
+}
+
+.layoutRoot {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 69px 1fr 80px;
+}

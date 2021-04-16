@@ -1,0 +1,22 @@
+/* Mobile portrait layout */
+.gameGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 250px 1fr;
+    height: 100%;
+}
+
+.gameField {
+    background-image: url(/dueling-club/bg-landscape.png);
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 250px;
+    padding-left: 0.1em;
+    padding-right: 0.1em;
+}
+
+.gameControl {
+    overflow-y: scroll;
+    height: 100%;
+}

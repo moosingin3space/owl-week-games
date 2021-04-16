@@ -5,6 +5,7 @@ import { randUniform, weightedFlip } from './randomness'
 export interface Spell {
     display: string
     description: string
+    icon: string
     offense: number
     defense: number
     effect: Effect | null
@@ -18,6 +19,7 @@ export const spells : Array<Spell> = [
     {
         display: 'Rictusempra',
         description: 'Does damage to your opponent.',
+        icon: 'rictusempra',
         offense: 1.8,
         defense: 1.0,
         effect: null,
@@ -25,6 +27,7 @@ export const spells : Array<Spell> = [
     {
         display: 'Stupefy',
         description: 'Damages your opponent and stuns them for one turn.',
+        icon: 'stupefy',
         offense: 1.5,
         defense: 1.0,
         effect: null,
@@ -32,6 +35,7 @@ export const spells : Array<Spell> = [
     {
         display: 'Petrificus Totalis',
         description: 'Binds your opponent.',
+        icon: 'petrificus-totalis',
         offense: 0,
         defense: 1.0,
         effect: { name: 'bound' },
@@ -39,6 +43,7 @@ export const spells : Array<Spell> = [
     {
         display: 'Incarcerus',
         description: 'Binds your opponent with ropes.',
+        icon: 'incarcerus',
         offense: 1.0,
         defense: 1.0,
         effect: { name: 'bound' },
@@ -46,6 +51,7 @@ export const spells : Array<Spell> = [
     {
         display: 'Expelliarmus',
         description: 'Disarms your opponent for 4 turns.',
+        icon: 'expelliarmus',
         offense: 0,
         defense: 0,
         effect: { name: 'disarmed' },
@@ -53,6 +59,7 @@ export const spells : Array<Spell> = [
     {
         display: 'Protego',
         description: 'Increases your defenses this turn.',
+        icon: 'protego',
         offense: 0,
         defense: 1.5,
         effect: null,
@@ -60,6 +67,7 @@ export const spells : Array<Spell> = [
     {
         display: 'Impedimenta',
         description: 'Strikes and increases your defenses this turn.',
+        icon: 'impedimenta',
         offense: 1.25,
         defense: 1.5,
         effect: null,
@@ -67,6 +75,7 @@ export const spells : Array<Spell> = [
     {
         display: 'Levicorpus',
         description: 'Flips your opponent for one turn.',
+        icon: 'levicorpus',
         offense: 1.0,
         defense: 1.0,
         effect: { name: 'flipped' },
@@ -76,7 +85,7 @@ export const spells : Array<Spell> = [
 export const characters : Array<Character> = [
     { name: 'harry' },
     { name: 'poc-1' },
-    { name: 'brunette-girl' },
+    { name: 'brunette' },
     { name: 'malfoy' },
     { name: 'poc-2' },
     { name: 'redhead' },
