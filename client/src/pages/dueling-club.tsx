@@ -1,4 +1,5 @@
-import React from "react"
+import React, { useRef } from "react"
+import { useInView } from "react-intersection-observer"
 import { StaticImage } from "gatsby-plugin-image"
 import { useMachine } from "@xstate/react"
 
@@ -13,17 +14,45 @@ import * as duelingStyles from "./dueling-club.module.css"
 
 interface GameGridProps {
     field: React.ReactNode
+    className?: string
+    style?: React.CSSProperties
 }
-const GameGrid: React.FC<GameGridProps> = ({field, children}) => (
-    <div className={duelingStyles.gameGrid}>
-        <div className={duelingStyles.gameField}>
-            {field}
+const GameGrid: React.FC<GameGridProps> = ({field, className, style, children}) => {
+    const { ref: topRef, inView: topInView } = useInView({
+        initialInView: true,
+        threshold: 0.5,
+    })
+    const { ref: bottomRef, inView: bottomInView } = useInView({
+        threshold: 0.5,
+    })
+
+    const numChildren = React.Children.count(children)
+    const taggedChildren = React.Children.map(children, (child, index) => {
+        if (index == 0) {
+            return (<div ref={topRef}>{child}</div>)
+        }
+        if (index == numChildren-1) {
+            return (<div ref={bottomRef}>{child}</div>)
+        }
+        // in all other cases, pass the child down
+        return child
+    })
+
+    return (
+        <div className={duelingStyles.gameGrid}>
+            <div className={duelingStyles.gameField}>
+                {field}
+            </div>
+            <div className={duelingStyles.gameControl}>
+                <div className={`${duelingStyles.scrollBox} ${className ? className : ''}`} style={style}>
+                    {taggedChildren}
+                </div>
+                {topInView ? null : <div className={duelingStyles.scrollUpIcon} aria-hidden={true}/>}
+                {bottomInView ? null : <div className={duelingStyles.scrollDownIcon} aria-hidden={true}/>}
+            </div>
         </div>
-        <div className={duelingStyles.gameControl}>
-            {children}
-        </div>
-    </div>
-)
+    )
+}
 
 interface HasSend {
     send: (event: DuelingEvent) => void;
@@ -75,26 +104,24 @@ const BattlefieldPage: React.FC<HasSend & DuelingContext> = ({player, opponent, 
             <div className="flex-grow"/>
             <CharacterStatsDisplay character={opponentCharacter} stats={opponent}/>
         </div>
-    )}>
-        <div className="flex flex-col">
-            {spells.map(spell => (
-                <div className="flex flex-row w-full border border-black p-2 justify-between items-center bg-gray-300">
-                    <img src={`/dueling-club/${spell.icon}.png`} width={128} height={128}/>
-                    <div className="flex flex-col items-center">
-                        <span className="text-xl text-center">{spell.display}</span>
-                        <span className="text-sm text-center">{spell.description}</span>
-                    </div>
-                    <Button text={"Cast"} onClick={() => send({ type: "CAST_SPELL", spell })}/>
+    )} className="flex flex-col">
+        {spells.map(spell => (
+            <div className="flex flex-row w-full border border-black p-2 justify-between items-center bg-gray-300">
+                <img src={`/dueling-club/${spell.icon}.png`} width={128} height={128}/>
+                <div className="flex flex-col items-center">
+                    <span className="text-xl text-center">{spell.display}</span>
+                    <span className="text-sm text-center">{spell.description}</span>
                 </div>
-            ))}
-        </div>
+                <Button text={"Cast"} onClick={() => send({ type: "CAST_SPELL", spell })}/>
+            </div>
+        ))}
     </GameGrid>
 )
 
 const CharacterDisplay: React.FC<Character & HasSend> = ({ name, send }) => {
     return (
         <div className="flex flex-col items-center border border-black p-2 my-2 bg-purple-600 bg-opacity-75">
-            <img src={`/dueling-club/${name}-headshot.png`} width={256} height={256}/>
+            <img src={`/dueling-club/${name}-headshot.png`} width={128} height={128}/>
             <Button text="Choose" onClick={() => send({ type: "PICK_CHARACTER", selected: { name } })}/>
         </div>
     )
@@ -105,15 +132,8 @@ const CharacterSelectPage: React.FC<HasSend> = ({send}) => (
         <span className="text-3xl text-white">
             Choose your character from the list.
         </span>
-    )}>
-        <div className="flex flex-col items-center relative p-4"
-            style={{
-                gridArea: "1/1/span 2",
-            }}>
-            <div className="w-full flex flex-col items-stretch">
-                {characters.map(character => <CharacterDisplay {...character} send={send}/>)}
-            </div>
-        </div>
+    )} className="flex flex-col items-stretch">
+        {characters.map(character => <CharacterDisplay {...character} send={send}/>)}
     </GameGrid>
 )
 
