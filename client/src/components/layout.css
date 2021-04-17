@@ -19,7 +19,12 @@ a {
 }
 
 @layer base {
-    #___gatsby,
+    /* purgecss ignore */
+    #___gatsby {
+        @apply h-full;
+    }
+
+    /* purgecss ignore */
     #gatsby-focus-wrapper {
         @apply h-full;
     }
