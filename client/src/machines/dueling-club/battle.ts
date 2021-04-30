@@ -1,86 +1,105 @@
-import { Machine, MachineConfig, ActorRef, send, assign } from 'xstate';
+import { Machine, ActorRef, send, sendParent, assign } from 'xstate';
 import { produce } from 'immer'
 import { Spell } from './common';
-import { PlayerEvent } from './player';
+import { PlayerEvent, PlayerToParentEvent } from './player';
 
 interface BattleStateSchema {
     states: {
+        turnIdle: {};
         waitForReady: {};
+        checkCanExchange: {};
         exchangeAttacks: {};
-        done: {};
+        checkAllResolved: {};
     };
 }
 
 const numPlayers = 2
 
 export interface BattleContext {
-    players: Array<ActorRef<PlayerEvent>>
-    selectedSpells: Array<(Spell | null)>
-    resolved: Array<boolean>
-
-    winner: number
+    players: Array<ActorRef<PlayerEvent>>;
+    selectedSpells: Array<(Spell | null)>;
+    resolved: Array<boolean>;
 }
 
 export type BattleEvent =
-    | { type: 'START' }
     | { type: 'PLAYER_READY', player: 0, spell: Spell }
     | { type: 'PLAYER_READY', player: 1, spell: Spell }
-    | { type: 'ATTACK_RESOLVED', player: 0 }
-    | { type: 'ATTACK_RESOLVED', player: 1 }
-    | { type: 'DEFEATED', player: 0 }
-    | { type: 'DEFEATED', player: 1 }
+    | PlayerToParentEvent
 
-const machineConfig: MachineConfig<BattleContext, BattleStateSchema, BattleEvent> = {
+export type BattleToParentEvent =
+    | { type: 'BATTLE_TURN_RESOLVED' }
+
+export const battleMachine = Machine<BattleContext, BattleStateSchema, BattleEvent>({
     id: 'battle',
-    initial: 'waitForReady',
+    initial: 'turnIdle',
     states: {
+        turnIdle: {
+            entry: 'clearTurnState',
+            always: 'waitForReady',
+        },
         waitForReady: {
-            entry: assign({
-                selectedSpells: (_context, _event) => Array(numPlayers).fill(null),
-                resolved: (_context, _event) => Array(numPlayers).fill(false),
-            }),
             on: {
-                PLAYER_READY: [
-                    {
-                        actions: assign({
-                            selectedSpells: (context, event) => (produce(context.selectedSpells, draftSpells => {
-                                draftSpells[event.player] = event.spell
-                            })),
-                        })
-                    },
+                PLAYER_READY: {
+                    actions: 'markPlayerReady',
+                    target: 'checkCanExchange',
+                }
+            }
+        },
+        checkCanExchange: {
+            on: {
+                '': [
                     {
                         target: 'exchangeAttacks',
-                        cond: (context, _) => context.selectedSpells.map((spell) => (spell != null))
-                                                .reduce((accumulator, currentValue) => (accumulator && currentValue))
-                    }
+                        cond: 'allReady',
+                        actions: [
+                            send((context, _event) => ({ type: 'ATTACK', spell: context.selectedSpells[0] }),
+                                 { to: (context) => context.players[1] }),
+                            send((context, _event) => ({ type: 'ATTACK', spell: context.selectedSpells[1] }),
+                                 { to: (context) => context.players[0] }),
+                        ]
+                    },
+                    { target: 'waitForReady' }
                 ]
             }
         },
         exchangeAttacks: {
-            entry: [
-                send((context, _event) => ({ type: 'ATTACK', spell: context.selectedSpells[0] }),
-                     { to: (context) => context.players[1] }),
-                send((context, _event) => ({ type: 'ATTACK', spell: context.selectedSpells[1] }),
-                     { to: (context) => context.players[0] }),
-            ],
             on: {
-                ATTACK_RESOLVED: {
-                    actions: assign({
-                        resolved: (context, event) => (produce(context.resolved, draftResolved => {
-                            draftResolved[event.player] = true
-                        }))
-                    })
+                TURN_RESOLVED: {
+                    actions: 'markResolved',
+                    target: 'checkAllResolved'
                 },
-                DEFEATED: {
-                    actions: assign({ winner: (_context, event) => event.player }),
-                    target: 'done',
-                }
             }
         },
-        done: {
-            type: 'final'
-        }
+        checkAllResolved: {
+            on: {
+                '': [
+                    {
+                        target: 'turnIdle',
+                        cond: 'allResolved',
+                        actions: 'tellParentResolved',
+                    },
+                    { target: 'exchangeAttacks' }
+                ]
+            }
+        },
     }
-};
-
-export const BattleMachine = Machine(machineConfig)
+},
+{
+    actions: {
+        clearTurnState: assign({
+            selectedSpells: (_context, _event) => Array(numPlayers).fill(null),
+            resolved: (_context, _event) => Array(numPlayers).fill(false),
+        }),
+        markPlayerReady: assign({
+            selectedSpells: (context, event) => (produce(context.selectedSpells, draftSpells => { draftSpells[event.player] = event.spell })),
+        }),
+        tellParentResolved: sendParent({ type: 'BATTLE_TURN_RESOLVED' }),
+        markResolved: assign({
+            resolved: (context, event) => (produce(context.resolved, draftResolved => { draftResolved[event.player] = true }))
+        }),
+    },
+    guards: {
+        allReady: (context, _event) => context.selectedSpells.map((spell) => (spell != null)).reduce((accumulator, currentValue) => (accumulator && currentValue)),
+        allResolved: (context, _event) => context.resolved.reduce((accumulator, currentValue) => (accumulator && currentValue)),
+    },
+});

@@ -1,75 +1,70 @@
-import { Machine, MachineConfig, MachineOptions, StateNodeConfig, assign } from 'xstate';
+import { Machine, StateNodeConfig, assign, sendParent } from 'xstate';
 import { Spell } from './common';
 
 interface PlayerStateSchema {
     states: {
         normal: {};
-        bound: {};
-        flipped: {};
-        disarmed: {};
+        check: {};
         defeat: {};
     };
 }
 
 interface PlayerContext {
+    id: number
     hp: number
+    damage: number
     effectTurns: number
 }
 
 export type PlayerEvent =
     | { type: 'ATTACK', spell: Spell }
 
-const effectMachine : StateNodeConfig<PlayerContext, {}, PlayerEvent> = {
-    entry: assign({ effectTurns: (_, event) => event?.spell?.effect?.turns || 0 }),
-    on: {
-        '': [
-            { actions: 'decrementCount' },
-            { target: 'normal', cond: 'effectExpired' }
-        ],
-        ATTACK: { actions: 'computeHp' }
-    }
-};
+export type PlayerToParentEvent =
+    | { type: 'TURN_RESOLVED', player: number, message?: string }
+    | { type: 'COMPLETION' }
 
-const machineConfig: MachineConfig<PlayerContext, PlayerStateSchema, PlayerEvent> = {
+export const playerMachine = Machine<PlayerContext, PlayerStateSchema, PlayerEvent>({
     id: 'player',
     initial: 'normal',
-    context: {
-        hp: 100,
-        effectTurns: 0,
-    },
     states: {
         normal: {
             on: {
-                '': { target: 'defeat', cond: 'hpZero' },
                 ATTACK: [
-                    { target: 'bound', cond: 'spellBinds' },
-                    { target: 'flipped', cond: 'spellFlips' },
-                    { target: 'disarmed', cond: 'spellDisarms' },
-                    { actions: 'computeHp' }
+                    {
+                        actions: [
+                            'computeHp',
+                            sendParent((context, _event) => ({
+                                type: 'TURN_RESOLVED',
+                                player: context.id,
+                                message: 'Spell hits!',
+                            }))
+                        ],
+                        target: 'check',
+                    }
                 ]
             }
         },
-        bound: effectMachine,
-        flipped: effectMachine,
-        disarmed: effectMachine,
+        check: {
+            on: {
+                '': [
+                    { cond: 'hpZero', target: 'defeat' },
+                    { target: 'normal' },
+                ]
+            }
+        },
         defeat: {
+            entry: sendParent((_context, _event) => ({ type: 'COMPLETION' })),
             type: 'final'
         }
     }
-};
-
-const machineOptions: Partial<MachineOptions<PlayerContext, PlayerEvent>> = {
+},
+{
     actions: {
-        decrementCount: assign({ effectTurns: (context, _) => context.effectTurns-- }),
-        computeHp: assign({ hp: (context, _event) => context.hp-- }), // TODO
+        decrementCount: assign({ effectTurns: (context, _) => context.effectTurns - 1 }),
+        computeHp: assign({ hp: (context, _event) => context.hp - context.damage }),
     },
     guards: {
-        spellBinds: (_, event) => event.spell.effect ? event.spell.effect.name == 'bound' : false,
-        spellFlips: (_, event) => event.spell.effect ? event.spell.effect.name == 'flipped' : false,
-        spellDisarms: (_, event) => event.spell.effect ? event.spell.effect.name == 'disarmed' : false,
         hpZero: (context, _) => context.hp <= 0,
         effectExpired: (context, _) => context.effectTurns <= 0,
     },
-};
-
-export const PlayerMachine = Machine(machineConfig, machineOptions)
+});

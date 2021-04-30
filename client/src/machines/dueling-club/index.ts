@@ -1,3 +1,9 @@
-import { characters, spells } from './common'
+import { Character, characters, spells } from './common';
+import { uxMachine, UxEvent, UxState } from './ux';
+import { BattleEvent } from './battle';
 
-export { characters, spells }
+export {
+    Character, UxEvent, UxState, BattleEvent,
+    characters, spells,
+    uxMachine,
+}

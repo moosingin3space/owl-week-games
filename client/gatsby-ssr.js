@@ -12,5 +12,6 @@ exports.onRenderBody = ({ setPostBodyComponents }) => {
         position: 'absolute',
         bottom: 0,
         visibility: 'hidden',
+        zIndex: 1000,
     }} data-xstate="data-xstate"/>);
 }

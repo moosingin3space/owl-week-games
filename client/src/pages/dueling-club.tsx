@@ -1,4 +1,4 @@
-import React, { useRef } from "react"
+import React from "react"
 import { useInView } from "react-intersection-observer"
 import { StaticImage } from "gatsby-plugin-image"
 import { useMachine } from "@xstate/react"
@@ -6,9 +6,10 @@ import { useMachine } from "@xstate/react"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import Button from "../components/button"
+import Modal from "../components/modal"
 import PercentageCircle from "../components/percentage-circle"
 
-import { duelingMachine, DuelingEvent, DuelingContext, Character, Stats, characters, spells } from "../machines/dueling"
+import { Character, UxEvent, UxState, uxMachine, characters, spells } from "../machines/dueling-club"
 
 import * as duelingStyles from "./dueling-club.module.css"
 
@@ -55,28 +56,24 @@ const GameGrid: React.FC<GameGridProps> = ({field, className, style, children}) 
 }
 
 interface HasSend {
-    send: (event: DuelingEvent) => void;
+    send: (event: UxEvent) => void;
 }
 
 interface CharacterStats {
     character: Character | null
-    stats: Stats
+    health: number
 }
 
-const CharacterStatsDisplay: React.FC<CharacterStats> = ({ character, stats }) => (
-    <div className="flex flex-col">
-        <PercentageCircle percentage={stats.hp}>
-            <div className="grid">
-                <img src={`/dueling-club/${character?.name}-headshot.png`} width={128} height={128}
-                    style={{ gridArea: "1/1" }}/>
-                <div className="relative" style={{ gridArea: "1/1" }}>
-                    {stats.effect}
-                </div>
+const CharacterStatsDisplay: React.FC<CharacterStats> = ({ character, health }) => (
+    <PercentageCircle percentage={health}>
+        <div className="grid">
+            <img src={`/dueling-club/${character?.name}-headshot.png`} width={128} height={128}
+                style={{ gridArea: "1/1" }}/>
+            <div className="relative" style={{ gridArea: "1/1" }}>
+                {/* TODO effect */}
             </div>
-        </PercentageCircle>
-        <div className="flex-grow"/>
-        {/* TODO explanations */}
-    </div>
+        </div>
+    </PercentageCircle>
 )
 
 interface Completion {
@@ -97,26 +94,60 @@ const CompletionPage: React.FC<Completion & HasSend> = ({victor, win, send}) => 
     </div>
 )
 
-const BattlefieldPage: React.FC<HasSend & DuelingContext> = ({player, opponent, character, opponentCharacter, send}) => (
-    <GameGrid field={(
-        <div className="flex flex-row">
-            <CharacterStatsDisplay character={character} stats={player}/>
-            <div className="flex-grow"/>
-            <CharacterStatsDisplay character={opponentCharacter} stats={opponent}/>
-        </div>
-    )} className="flex flex-col">
-        {spells.map(spell => (
-            <div className="flex flex-row w-full border border-black p-2 justify-between items-center bg-gray-300">
-                <img src={`/dueling-club/${spell.icon}.png`} width={128} height={128}/>
-                <div className="flex flex-col items-center">
-                    <span className="text-xl text-center">{spell.display}</span>
-                    <span className="text-sm text-center">{spell.description}</span>
-                </div>
-                <Button text={"Cast"} onClick={() => send({ type: "CAST_SPELL", spell })}/>
+interface BattlefieldProps extends HasSend {
+    current: UxState,
+}
+
+const BattlefieldPage: React.FC<BattlefieldProps> = ({current, send}) => {
+    const spellTarget = current.matches('battle.waitSpellTarget');
+    const resolvingAnimation = current.matches('battle.resolving');
+    const waitNext = current.matches('battle.waitNext');
+
+    const showModal = spellTarget || resolvingAnimation || waitNext;
+    let modalComponent = <h3>Not implemented</h3>;
+    if (spellTarget) {
+        modalComponent = (
+            <div className="flex flex-col items-center p-6">
+                <h3>Target</h3>
+                <Button text={"Cast"} onClick={() => send({ type: 'TARGET_SPELL', targetPosition: 0 })}/>
             </div>
-        ))}
-    </GameGrid>
-)
+        );
+    } else if (resolvingAnimation || waitNext) {
+        modalComponent = (
+            <div className="flex flex-col items-center p-6">
+                <h3>Resolving...</h3>
+                <div className="flex flex-row">
+                    <img src={`/dueling-club/wand.gif`} width={200} height={50} style={{ transform: "scale(-1, 1)" }}/>
+                    <img src={`/dueling-club/wand.gif`} width={200} height={50}/>
+                </div>
+                { waitNext ? <Button text={"Next"} onClick={() => send({ type: 'NEXT_TURN' })}/> : null }
+            </div>
+        );
+    }
+    return (
+        <GameGrid field={(
+            <div className="flex flex-row">
+                <CharacterStatsDisplay character={current.context.humanCharacter} health={current.context.human!.state.context.hp}/>
+                <div className="flex-grow"/>
+                <CharacterStatsDisplay character={current.context.aiCharacter} health={current.context.ai!.state.context.hp}/>
+            </div>
+        )} className="flex flex-col">
+            {spells.map(spell => (
+                <div key={spell.display} className="flex flex-row w-full border border-black p-2 justify-between items-center bg-gray-300">
+                    <img src={`/dueling-club/${spell.icon}.png`} width={128} height={128}/>
+                    <div className="flex flex-col items-center">
+                        <span className="text-xl text-center">{spell.display}</span>
+                        <span className="text-sm text-center">{spell.description}</span>
+                    </div>
+                    <Button text={"Cast"} onClick={() => send({ type: "CHOOSE_SPELL", selected: spell })}/>
+                </div>
+            ))}
+            <Modal visible={showModal}>
+                {modalComponent}
+            </Modal>
+        </GameGrid>
+    )
+}
 
 const CharacterDisplay: React.FC<Character & HasSend> = ({ name, send }) => {
     return (
@@ -133,7 +164,7 @@ const CharacterSelectPage: React.FC<HasSend> = ({send}) => (
             Choose your character from the list.
         </span>
     )} className="flex flex-col items-stretch">
-        {characters.map(character => <CharacterDisplay {...character} send={send}/>)}
+        {characters.map(character => <CharacterDisplay key={character.name} {...character} send={send}/>)}
     </GameGrid>
 )
 
@@ -156,20 +187,20 @@ const StartPage : React.FC<HasSend> = ({send}) => (
 )
 
 const DuelingClubPage : React.FC<{}> = () => {
-    const [current, send] = useMachine(duelingMachine, {
+    const [current, send] = useMachine(uxMachine, {
         devTools: true,
     })
     let component = <h3>Not implemented</h3>;
     if (current.matches('intro')) {
         component = <StartPage send={send}/>;
-    } else if (current.matches('characterSelect')) {
+    } else if (current.matches('config')) {
         component = <CharacterSelectPage send={send}/>;
     } else if (current.matches('battle')) {
-        component = <BattlefieldPage send={send} {...current.context}/>;
-    } else if (current.matches('victory')) {
-        component = <CompletionPage send={send} victor={current.context.character} win={true}/>;
-    } else if (current.matches('defeat')) {
-        component = <CompletionPage send={send} victor={current.context.opponentCharacter} win={false}/>;
+        component = <BattlefieldPage send={send} current={current}/>;
+    } else if (current.matches('win')) {
+        component = <CompletionPage send={send} victor={current.context.humanCharacter} win={true}/>;
+    } else if (current.matches('loss')) {
+        component = <CompletionPage send={send} victor={current.context.aiCharacter} win={false}/>;
     } else if (current.matches('draw')) {
         component = <CompletionPage send={send} victor={null} win={false}/>;
     }
