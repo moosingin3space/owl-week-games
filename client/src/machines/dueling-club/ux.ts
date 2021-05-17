@@ -1,11 +1,11 @@
 import { Machine, State, SpawnedActorRef, assign, spawn, send, forwardTo, actions } from 'xstate';
 import { battleMachine, BattleToParentEvent } from './battle';
-import { playerMachine, PlayerEvent, PlayerToParentEvent } from './player';
+import { playerMachine, PlayerEvent, PlayerToParentEvent, DEFAULT_ACCURACY } from './player';
 import { Character, Spell, characters, spells } from './common';
 
-import { randUniform } from '../randomness';
+import { weightedFlip, randUniform } from '../randomness';
 
-const { stop } = actions;
+const { pure, stop } = actions;
 
 interface UxStateSchema {
     states: {
@@ -85,8 +85,8 @@ export const uxMachine = Machine<UxContext, UxStateSchema, UxEvent>({
             on: {
                 '': {
                     actions: assign({
-                        human: (_context, _event) => spawn(playerMachine.withContext({ id: 0, hp: 100, effectTurns: 0, damage: 25 }), { sync: true }),
-                        ai: (_context, _event) => spawn(playerMachine.withContext({ id: 1, hp: 100, effectTurns: 0, damage: 50 }), { sync: true }),
+                        human: (_context, _event) => spawn(playerMachine.withContext({ id: 0, hp: 100, accuracy: DEFAULT_ACCURACY, effectTurns: 0 }), { sync: true }),
+                        ai: (_context, _event) => spawn(playerMachine.withContext({ id: 1, hp: 100, accuracy: DEFAULT_ACCURACY, effectTurns: 0 }), { sync: true }),
                     }),
                     target: 'battle',
                 }
@@ -100,6 +100,7 @@ export const uxMachine = Machine<UxContext, UxStateSchema, UxEvent>({
                         players: [context.human!, context.ai!],
                         selectedSpells: [null, null],
                         resolved: [false, false],
+                        ready: [false, false],
                     })
                 }
             ],
@@ -121,11 +122,28 @@ export const uxMachine = Machine<UxContext, UxStateSchema, UxEvent>({
                 waitSpellTarget: {
                     on: {
                         TARGET_SPELL: {
-                            // TODO determine if the spell hit
                             actions: [
-                                send(
-                                    (context, _event) => ({ type: 'PLAYER_READY', player: 0, spell: context.selectedSpell }),
-                                    { to: 'battle' }),
+                                pure((context, event) => {
+                                    const greenThresh = context.human!.state.context.accuracy;
+                                    const yellowThresh = greenThresh / 2.5;
+                                    const green = event.targetPosition > greenThresh;
+                                    const yellow = event.targetPosition > yellowThresh;
+                                    let hit = green;
+                                    if (yellow && !green) {
+                                        let proportion = (event.targetPosition - yellowThresh) / (greenThresh - yellowThresh);
+                                        // clamp at 25%
+                                        if (proportion < 0.25) {
+                                            proportion = 0.25;
+                                        }
+                                        // generate random number
+                                        hit = weightedFlip(proportion);
+                                    }
+                                    let spell = context.selectedSpell;
+                                    if (!hit) {
+                                        spell = null;
+                                    }
+                                    return send({ type: 'PLAYER_READY', player: 0, spell }, { to: 'battle' });
+                                }),
                                 // TODO make this AI actually decent
                                 send(
                                     (_context, _event) => ({ type: 'PLAYER_READY', player: 1, spell: spells[randUniform(0, spells.length-1)] }),

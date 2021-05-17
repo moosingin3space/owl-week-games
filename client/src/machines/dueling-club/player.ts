@@ -12,12 +12,15 @@ interface PlayerStateSchema {
 interface PlayerContext {
     id: number
     hp: number
-    damage: number
     effectTurns: number
+    accuracy: number
 }
+
+export const DEFAULT_ACCURACY = 0.66;
 
 export type PlayerEvent =
     | { type: 'ATTACK', spell: Spell }
+    | { type: 'ATTACK_MISSED' }
 
 export type PlayerToParentEvent =
     | { type: 'TURN_RESOLVED', player: number, message?: string }
@@ -41,7 +44,17 @@ export const playerMachine = Machine<PlayerContext, PlayerStateSchema, PlayerEve
                         ],
                         target: 'check',
                     }
-                ]
+                ],
+                ATTACK_MISSED: {
+                    actions: [
+                        sendParent((context, _event) => ({
+                            type: 'TURN_RESOLVED',
+                            player: context.id,
+                            message: 'Spell misses!',
+                        }))
+                    ],
+                    target: 'check'
+                }
             }
         },
         check: {
