@@ -14,9 +14,11 @@ interface PlayerContext {
     hp: number
     effectTurns: number
     accuracy: number
+    damage: number
 }
 
 export const DEFAULT_ACCURACY = 0.66;
+export const DEFAULT_DAMAGE = 10;
 
 export type PlayerEvent =
     | { type: 'ATTACK', spell: Spell }

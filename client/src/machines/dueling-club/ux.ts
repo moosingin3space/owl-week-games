@@ -1,6 +1,6 @@
 import { Machine, State, SpawnedActorRef, assign, spawn, send, forwardTo, actions } from 'xstate';
 import { battleMachine, BattleToParentEvent } from './battle';
-import { playerMachine, PlayerEvent, PlayerToParentEvent, DEFAULT_ACCURACY } from './player';
+import { playerMachine, PlayerEvent, PlayerToParentEvent, DEFAULT_ACCURACY, DEFAULT_DAMAGE } from './player';
 import { Character, Spell, characters, spells } from './common';
 
 import { weightedFlip, randUniform } from '../randomness';
@@ -85,8 +85,8 @@ export const uxMachine = Machine<UxContext, UxStateSchema, UxEvent>({
             on: {
                 '': {
                     actions: assign({
-                        human: (_context, _event) => spawn(playerMachine.withContext({ id: 0, hp: 100, accuracy: DEFAULT_ACCURACY, effectTurns: 0 }), { sync: true }),
-                        ai: (_context, _event) => spawn(playerMachine.withContext({ id: 1, hp: 100, accuracy: DEFAULT_ACCURACY, effectTurns: 0 }), { sync: true }),
+                        human: (_context, _event) => spawn(playerMachine.withContext({ id: 0, hp: 100, accuracy: DEFAULT_ACCURACY, damage: DEFAULT_DAMAGE, effectTurns: 0 }), { sync: true }),
+                        ai: (_context, _event) => spawn(playerMachine.withContext({ id: 1, hp: 100, accuracy: DEFAULT_ACCURACY, damage: DEFAULT_DAMAGE, effectTurns: 0 }), { sync: true }),
                     }),
                     target: 'battle',
                 }
