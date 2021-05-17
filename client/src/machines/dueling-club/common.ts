@@ -16,7 +16,7 @@ export interface Character {
 export const spells : Array<Spell> = [
     {
         display: 'Rictusempra',
-        description: 'Does damage to your opponent.',
+        description: 'Causes opponent to buckle with laughter.',
         icon: 'rictusempra',
         offense: 1.8,
         defense: 1.0,
@@ -24,7 +24,7 @@ export const spells : Array<Spell> = [
     },
     {
         display: 'Stupefy',
-        description: 'Damages your opponent and stuns them for one turn.',
+        description: 'Stuns opponent.',
         icon: 'stupefy',
         offense: 1.5,
         defense: 1.0,
@@ -32,17 +32,9 @@ export const spells : Array<Spell> = [
     },
     {
         display: 'Petrificus Totalis',
-        description: 'Binds your opponent.',
+        description: 'Binds your opponent for 3 turns.',
         icon: 'petrificus-totalis',
         offense: 0,
-        defense: 1.0,
-        effect: { name: 'bound' },
-    },
-    {
-        display: 'Incarcerus',
-        description: 'Binds your opponent with ropes.',
-        icon: 'incarcerus',
-        offense: 1.0,
         defense: 1.0,
         effect: { name: 'bound', turns: 3 },
     },
@@ -56,7 +48,7 @@ export const spells : Array<Spell> = [
     },
     {
         display: 'Protego',
-        description: 'Increases your defenses this turn.',
+        description: "Shields you from opponent's spell.",
         icon: 'protego',
         offense: 0,
         defense: 1.5,
@@ -64,7 +56,7 @@ export const spells : Array<Spell> = [
     },
     {
         display: 'Impedimenta',
-        description: 'Strikes and increases your defenses this turn.',
+        description: 'Strikes and slows opponent.',
         icon: 'impedimenta',
         offense: 1.25,
         defense: 1.5,
@@ -72,7 +64,7 @@ export const spells : Array<Spell> = [
     },
     {
         display: 'Levicorpus',
-        description: 'Flips your opponent for one turn.',
+        description: 'Flips your opponent for next turn.',
         icon: 'levicorpus',
         offense: 1.0,
         defense: 1.0,
