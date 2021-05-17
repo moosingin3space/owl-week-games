@@ -8,6 +8,7 @@ import SEO from "../components/seo"
 import Button from "../components/button"
 import Modal from "../components/modal"
 import PercentageCircle from "../components/percentage-circle"
+import Gauge from "../components/gauge"
 
 import { Character, UxEvent, UxState, uxMachine, characters, spells } from "../machines/dueling-club"
 
@@ -106,10 +107,13 @@ const BattlefieldPage: React.FC<BattlefieldProps> = ({current, send}) => {
     const showModal = spellTarget || resolvingAnimation || waitNext;
     let modalComponent = <h3>Not implemented</h3>;
     if (spellTarget) {
+        // TODO set thresholds based on character stats
+        const accuracy = current.context.human!.state.context.accuracy;
         modalComponent = (
             <div className="flex flex-col items-center p-6">
-                <h3>Target</h3>
-                <Button text={"Cast"} onClick={() => send({ type: 'TARGET_SPELL', targetPosition: 0 })}/>
+                <h3 className="font-bold" >Target your spell!</h3>
+                <Gauge yellowThresh={accuracy / 2.5} greenThresh={accuracy} buttonLabel={"Cast"}
+                    onStopped={(targetPosition) => send({ type: 'TARGET_SPELL', targetPosition })}/>
             </div>
         );
     } else if (resolvingAnimation || waitNext) {
