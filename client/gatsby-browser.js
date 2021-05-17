@@ -8,9 +8,6 @@
 const inspect = require('@xstate/inspect')
 
 let inspector = null;
-const inspectOptions = {
-    iframe: false
-};
 
 exports.onClientEntry = () => {
     inspector = inspect.inspect();
