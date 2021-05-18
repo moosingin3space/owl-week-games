@@ -4,7 +4,8 @@ import { Spell } from './common';
 interface PlayerStateSchema {
     states: {
         normal: {};
-        check: {};
+        checkHp: {};
+        turnFinished: {};
         defeat: {};
     };
 }
@@ -14,11 +15,10 @@ interface PlayerContext {
     hp: number
     effectTurns: number
     accuracy: number
-    damage: number
 }
 
 export const DEFAULT_ACCURACY = 0.66;
-export const DEFAULT_DAMAGE = 10;
+const BASE_DAMAGE = 10;
 
 export type PlayerEvent =
     | { type: 'ATTACK', spell: Spell }
@@ -26,7 +26,7 @@ export type PlayerEvent =
 
 export type PlayerToParentEvent =
     | { type: 'TURN_RESOLVED', player: number, message?: string }
-    | { type: 'COMPLETION' }
+    | { type: 'COMPLETION', id: number }
 
 export const playerMachine = Machine<PlayerContext, PlayerStateSchema, PlayerEvent>({
     id: 'player',
@@ -34,41 +34,36 @@ export const playerMachine = Machine<PlayerContext, PlayerStateSchema, PlayerEve
     states: {
         normal: {
             on: {
-                ATTACK: [
-                    {
-                        actions: [
-                            'computeHp',
-                            sendParent((context, _event) => ({
-                                type: 'TURN_RESOLVED',
-                                player: context.id,
-                                message: 'Spell hits!',
-                            }))
-                        ],
-                        target: 'check',
-                    }
-                ],
+                ATTACK: {
+                    actions: 'computeHp',
+                    target: 'checkHp',
+                },
                 ATTACK_MISSED: {
-                    actions: [
-                        sendParent((context, _event) => ({
-                            type: 'TURN_RESOLVED',
-                            player: context.id,
-                            message: 'Spell misses!',
-                        }))
-                    ],
-                    target: 'check'
+                    target: 'checkHp'
                 }
             }
         },
-        check: {
+        checkHp: {
             on: {
                 '': [
                     { cond: 'hpZero', target: 'defeat' },
-                    { target: 'normal' },
+                    { target: 'turnFinished' },
                 ]
             }
         },
+        turnFinished: {
+            on: {
+                '': {
+                    actions: sendParent((context, _event) => ({
+                        type: 'TURN_RESOLVED',
+                        player: context.id,
+                    })),
+                    target: 'normal'
+                }
+            }
+        },
         defeat: {
-            entry: sendParent((_context, _event) => ({ type: 'COMPLETION' })),
+            entry: sendParent((context, _event) => ({ type: 'COMPLETION', id: context.id })),
             type: 'final'
         }
     }
@@ -76,7 +71,9 @@ export const playerMachine = Machine<PlayerContext, PlayerStateSchema, PlayerEve
 {
     actions: {
         decrementCount: assign({ effectTurns: (context, _) => context.effectTurns - 1 }),
-        computeHp: assign({ hp: (context, _event) => context.hp - context.damage }),
+        computeHp: assign({
+            hp: (context, event) => context.hp - BASE_DAMAGE * event.spell.offense
+        }),
     },
     guards: {
         hpZero: (context, _) => context.hp <= 0,

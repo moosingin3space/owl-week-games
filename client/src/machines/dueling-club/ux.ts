@@ -36,6 +36,11 @@ export interface UxContext {
     ai: SpawnedActorRef<PlayerEvent> | null;
 }
 
+type InternalEvent =
+    | { type: 'WON' }
+    | { type: 'LOSS' }
+    | { type: 'DRAW' }
+
 export type UxEvent =
     | { type: 'START' }
     | { type: 'PICK_CHARACTER', selected: Character }
@@ -45,6 +50,7 @@ export type UxEvent =
     | { type: 'AGAIN' }
     | BattleToParentEvent
     | PlayerToParentEvent
+    | InternalEvent
 
 export const uxMachine = Machine<UxContext, UxStateSchema, UxEvent>({
     id: 'ux',
@@ -156,24 +162,21 @@ export const uxMachine = Machine<UxContext, UxStateSchema, UxEvent>({
                 resolving: {
                     on: {
                         TURN_RESOLVED: { actions: forwardTo('battle') },
+                        COMPLETION: { actions: forwardTo('battle') },
                         BATTLE_TURN_RESOLVED: 'waitNext',
-                        COMPLETION: [
-                            {
-                                cond: (context, _event) => context.human!.state.context.hp == 0 && context.ai!.state.context.hp != 0,
-                                target: '#ux.loss',
-                                internal: false,
-                            },
-                            {
-                                cond: (context, _event) => context.human!.state.context.hp != 0 && context.ai!.state.context.hp == 0,
-                                target: '#ux.win',
-                                internal: false,
-                            },
-                            {
-                                cond: (context, _event) => context.human!.state.context.hp == 0 && context.ai!.state.context.hp == 0,
-                                target: '#ux.draw',
-                                internal: false,
-                            }
-                        ]
+                        BATTLE_COMPLETION: {
+                            actions: pure((_context, event) => {
+                                if (event.player == 0) {
+                                    return send({ type: 'LOSS' });
+                                } else if (event.player == 1) {
+                                    return send({ type: 'WON' });
+                                }
+                                return send({ type: 'DRAW'});
+                            })
+                        },
+                        WON: '#ux.win',
+                        LOSS: '#ux.loss',
+                        DRAW: '#ux.draw',
                     }
                 },
                 waitNext: {

@@ -173,7 +173,7 @@ const CharacterSelectPage: React.FC<HasSend> = ({send}) => (
 )
 
 const StartPage : React.FC<HasSend> = ({send}) => (
-    <div className="grid">
+    <div className="grid overflow-y-auto">
         <StaticImage src="../images/dueling-club/background.png" alt="Two wizards dueling"
             placeholder="blurred" layout="fullWidth"
             style={{

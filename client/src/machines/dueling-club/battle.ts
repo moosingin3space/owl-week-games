@@ -31,6 +31,7 @@ export type BattleEvent =
 
 export type BattleToParentEvent =
     | { type: 'BATTLE_TURN_RESOLVED' }
+    | { type: 'BATTLE_COMPLETION', player: number }
 
 const sendAttack = (player: number, opponent: number) => pure((context: BattleContext, _event) => {
     if (context.selectedSpells[player] != null) {
@@ -75,6 +76,13 @@ export const battleMachine = Machine<BattleContext, BattleStateSchema, BattleEve
             on: {
                 TURN_RESOLVED: {
                     actions: 'markResolved',
+                    target: 'checkAllResolved'
+                },
+                COMPLETION: {
+                    actions: sendParent((_context, event) => ({
+                        type: 'BATTLE_COMPLETION',
+                        player: event.id
+                    })),
                     target: 'checkAllResolved'
                 },
             }
