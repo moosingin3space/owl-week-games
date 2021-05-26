@@ -75,3 +75,7 @@
         opacity: .2;
     }
 }
+
+.flippedPlayer {
+    transform: scaleY(-1.0);
+}

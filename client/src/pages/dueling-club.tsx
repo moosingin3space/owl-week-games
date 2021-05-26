@@ -10,7 +10,7 @@ import Modal from "../components/modal"
 import PercentageCircle from "../components/percentage-circle"
 import Gauge from "../components/gauge"
 
-import { Character, UxEvent, UxState, uxMachine, characters, spells } from "../machines/dueling-club"
+import { Character, UxEvent, UxState, uxMachine, PlayerState, characters, spells } from "../machines/dueling-club"
 
 import * as duelingStyles from "./dueling-club.module.css"
 
@@ -62,16 +62,16 @@ interface HasSend {
 
 interface CharacterStats {
     character: Character | null
-    health: number
+    state: PlayerState
 }
 
-const CharacterStatsDisplay: React.FC<CharacterStats> = ({ character, health }) => (
-    <PercentageCircle percentage={health}>
-        <div className="grid">
+const CharacterStatsDisplay: React.FC<CharacterStats> = ({ character, state }) => (
+    <PercentageCircle percentage={state.context.hp}>
+        <div className={`grid ${state.matches('flipped') ? duelingStyles.flippedPlayer : '' }`}>
             <img src={`/dueling-club/${character?.name}-headshot.png`} width={128} height={128}
                 style={{ gridArea: "1/1" }}/>
             <div className="relative" style={{ gridArea: "1/1" }}>
-                {/* TODO effect */}
+                {state.matches('shielded') ? 'Shielded' : ''}
             </div>
         </div>
     </PercentageCircle>
@@ -118,7 +118,7 @@ const BattlefieldPage: React.FC<BattlefieldProps> = ({current, send}) => {
         );
     } else if (resolvingAnimation || waitNext) {
         modalComponent = (
-            <div className="flex flex-col items-center p-6">
+            <div className="flex flex-col items-center p-6 bg-black text-white">
                 <h3>Resolving...</h3>
                 <div className="flex flex-row">
                     <img src={`/dueling-club/wand.gif`} width={200} height={50} style={{ transform: "scale(-1, 1)" }}/>
@@ -131,9 +131,9 @@ const BattlefieldPage: React.FC<BattlefieldProps> = ({current, send}) => {
     return (
         <GameGrid field={(
             <div className="flex flex-row">
-                <CharacterStatsDisplay character={current.context.humanCharacter} health={current.context.human!.state.context.hp}/>
+                <CharacterStatsDisplay character={current.context.humanCharacter} state={current.context.human!.state}/>
                 <div className="flex-grow"/>
-                <CharacterStatsDisplay character={current.context.aiCharacter} health={current.context.ai!.state.context.hp}/>
+                <CharacterStatsDisplay character={current.context.aiCharacter} state={current.context.ai!.state}/>
             </div>
         )} className="flex flex-col">
             {spells.map(spell => (

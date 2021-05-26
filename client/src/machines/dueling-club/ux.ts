@@ -91,8 +91,8 @@ export const uxMachine = Machine<UxContext, UxStateSchema, UxEvent>({
             on: {
                 '': {
                     actions: assign({
-                        human: (_context, _event) => spawn(playerMachine.withContext({ id: 0, hp: 100, accuracy: DEFAULT_ACCURACY, damage: DEFAULT_DAMAGE, effectTurns: 0 }), { sync: true }),
-                        ai: (_context, _event) => spawn(playerMachine.withContext({ id: 1, hp: 100, accuracy: DEFAULT_ACCURACY, damage: DEFAULT_DAMAGE, effectTurns: 0 }), { sync: true }),
+                        human: (_context, _event) => spawn(playerMachine.withContext({ id: 0, hp: 100, accuracy: DEFAULT_ACCURACY, effect: null, effectTurns: 0 }), { sync: true }),
+                        ai: (_context, _event) => spawn(playerMachine.withContext({ id: 1, hp: 100, accuracy: DEFAULT_ACCURACY, effect: null, effectTurns: 0 }), { sync: true }),
                     }),
                     target: 'battle',
                 }

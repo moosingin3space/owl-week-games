@@ -23,7 +23,7 @@ const PercentageCircle: React.FC<HasPercentage> = ({percentage, children}) => (
 
         <div className={`${styles.insideCircle} ${children ? styles.hasChildren : ''}`}>
             {children}
-            <span>
+            <span className="z-10">
                 {percentage}%
             </span>
         </div>
