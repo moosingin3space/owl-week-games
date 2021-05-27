@@ -96,7 +96,7 @@ interface Completion {
 }
 
 const CompletionPage: React.FC<Completion & HasSend> = ({victor, win, send}) => (
-    <div className="grid overflow-y-auto">
+    <div className="grid">
         <img src="/dueling-club/bg-landscape.png" width={700} height={394} style={{ gridArea: "1/1" }} className="w-full"/>
         <div className="flex flex-col relative items-center" style={{ gridArea: "1/1" }}>
             {victor ? <img src={`/dueling-club/${victor.name}-left.png`} width={300} height={300}/> : <span/>}
@@ -185,7 +185,7 @@ const CharacterSelectPage: React.FC<HasSend> = ({send}) => (
 )
 
 const StartPage : React.FC<HasSend> = ({send}) => (
-    <div className="grid overflow-y-auto">
+    <div className="grid">
         <StaticImage src="../images/dueling-club/background.png" alt="Two wizards dueling"
             placeholder="blurred" layout="fullWidth"
             style={{
@@ -207,12 +207,15 @@ const DuelingClubPage : React.FC<{}> = () => {
         devTools: true,
     })
     let component = <h3>Not implemented</h3>;
+    let scrollBody = true;
     if (current.matches('intro')) {
         component = <StartPage send={send}/>;
     } else if (current.matches('config')) {
         component = <CharacterSelectPage send={send}/>;
+        scrollBody = false;
     } else if (current.matches('battle')) {
         component = <BattlefieldPage send={send} current={current}/>;
+        scrollBody = false;
     } else if (current.matches('win')) {
         component = <CompletionPage send={send} victor={current.context.humanCharacter} win={true}/>;
     } else if (current.matches('loss')) {
@@ -222,7 +225,7 @@ const DuelingClubPage : React.FC<{}> = () => {
     }
 
     return (
-        <Layout scrollBody={false}>
+        <Layout scrollBody={scrollBody}>
             <SEO title="Dueling Club" />
             {component}
         </Layout>
