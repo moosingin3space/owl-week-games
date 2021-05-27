@@ -65,13 +65,26 @@ interface CharacterStats {
     state: PlayerState
 }
 
+const getStyleFor = (state: PlayerState): string => {
+    if (state.matches('flipped')) {
+        return duelingStyles.flippedPlayer;
+    }
+    if (state.matches('disarmed')) {
+        return duelingStyles.disarmedPlayer;
+    }
+    if (state.matches('bound')) {
+        return duelingStyles.boundPlayer;
+    }
+
+    return '';
+};
+
 const CharacterStatsDisplay: React.FC<CharacterStats> = ({ character, state }) => (
     <PercentageCircle percentage={state.context.hp}>
-        <div className={`grid ${state.matches('flipped') ? duelingStyles.flippedPlayer : '' }`}>
+        <div className={`grid ${getStyleFor(state)}`}>
             <img src={`/dueling-club/${character?.name}-headshot.png`} width={128} height={128}
                 style={{ gridArea: "1/1" }}/>
             <div className="relative" style={{ gridArea: "1/1" }}>
-                {state.matches('shielded') ? 'Shielded' : ''}
             </div>
         </div>
     </PercentageCircle>
@@ -107,7 +120,6 @@ const BattlefieldPage: React.FC<BattlefieldProps> = ({current, send}) => {
     const showModal = spellTarget || resolvingAnimation || waitNext;
     let modalComponent = <h3>Not implemented</h3>;
     if (spellTarget) {
-        // TODO set thresholds based on character stats
         const accuracy = current.context.human!.state.context.accuracy;
         modalComponent = (
             <div className="flex flex-col items-center p-6">

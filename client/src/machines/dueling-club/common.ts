@@ -42,13 +42,6 @@ export const spells : Array<Spell> = [
         effect: { name: 'disarmed', turns: 2 },
     },
     {
-        display: 'Protego',
-        description: "Shields you from opponent's spell.",
-        icon: 'protego',
-        offense: 0,
-        effect: { name: 'shielded', turns: 1 },
-    },
-    {
         display: 'Impedimenta',
         description: 'Strikes and slows opponent.',
         icon: 'impedimenta',
@@ -78,4 +71,3 @@ export type Effect =
     | { name: 'bound', turns: 3 }
     | { name: 'flipped', turns: 1 }
     | { name: 'disarmed', turns: 2 }
-    | { name: 'shielded', turns: 1 }

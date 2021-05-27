@@ -79,3 +79,23 @@
 .flippedPlayer {
     transform: scaleY(-1.0);
 }
+
+.disarmedPlayer {
+}
+
+.disarmedPlayer::after {
+    content: " ";
+    grid-area: 1 / 1;
+    background: rgba(128, 0, 0, 0.65);
+    border-radius: 50%;
+}
+
+.boundPlayer {
+}
+
+.boundPlayer::after {
+    content: " ";
+    grid-area: 1 / 1;
+    background: rgba(77, 77, 77, 0.65);
+    border-radius: 50%;
+}

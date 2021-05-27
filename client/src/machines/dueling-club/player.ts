@@ -8,6 +8,8 @@ interface PlayerStateSchema {
         conditionalTurnStart: {};
         normal: {};
         flipped: {};
+        disarmed: {};
+        bound: {};
         checkHp: {};
         turnFinished: {};
         defeat: {};
@@ -23,7 +25,9 @@ export interface PlayerContext {
 }
 
 export const DEFAULT_ACCURACY = 0.66;
-const ACCURACY_FLIPPED = 0.20;
+const ACCURACY_FLIPPED = 0.90;
+const ACCURACY_DISARMED = 0.95;
+const ACCURACY_BOUND = 0.80;
 const BASE_DAMAGE = 10;
 
 export type PlayerEvent =
@@ -44,11 +48,14 @@ export const playerMachine = Machine<PlayerContext, PlayerStateSchema, PlayerEve
             on: {
                 '': [
                     { cond: 'flipped', target: 'flipped' },
+                    { cond: 'disarmed', target: 'disarmed' },
+                    { cond: 'bound', target: 'bound' },
                     { target: 'normal' },
                 ]
             }
         },
         normal: {
+            entry: 'makeNormalAccuracy',
             on: {
                 ATTACK: {
                     actions: ['computeHp', 'applyEffects'],
@@ -66,7 +73,29 @@ export const playerMachine = Machine<PlayerContext, PlayerStateSchema, PlayerEve
                 },
                 ATTACK_MISSED: 'checkHp',
             },
-            exit: ['unflipMe', 'unapplyEffects'],
+            exit: 'checkEffect',
+        },
+        disarmed: {
+            entry: 'disarmMe',
+            on: {
+                ATTACK: {
+                    actions: 'computeHp',
+                    target: 'checkHp',
+                },
+                ATTACK_MISSED: 'checkHp',
+            },
+            exit: 'checkEffect',
+        },
+        bound: {
+            entry: 'bindMe',
+            on: {
+                ATTACK: {
+                    actions: 'computeHp',
+                    target: 'checkHp',
+                },
+                ATTACK_MISSED: 'checkHp',
+            },
+            exit: 'checkEffect',
         },
         checkHp: {
             on: {
@@ -100,8 +129,17 @@ export const playerMachine = Machine<PlayerContext, PlayerStateSchema, PlayerEve
             hp: (context, event) => context.hp - BASE_DAMAGE * event.spell.offense
         }),
         flipMe: assign({ accuracy: (_context, _event) => ACCURACY_FLIPPED }),
-        unflipMe: assign({ accuracy: (_context, _event) => DEFAULT_ACCURACY }),
-        unapplyEffects: assign({ effect: (_context, _event) => null }),
+        bindMe: assign({ accuracy: (_context, _event) => ACCURACY_BOUND }),
+        disarmMe: assign({ accuracy: (_context, _event) => ACCURACY_DISARMED }),
+        makeNormalAccuracy: assign({ accuracy: (_context, _event) => DEFAULT_ACCURACY }),
+        checkEffect: pure((context, _event) => {
+            const newEffectTurns = context.effectTurns - 1;
+            if (newEffectTurns <= 0) {
+                return assign({ effect: (_context, _event) => null });
+            } else {
+                return assign({ effectTurns: (context, _) => newEffectTurns });
+            }
+        }),
         applyEffects: pure((_context, event) => {
             if (event.type != 'ATTACK') {
                 // TODO assert
@@ -109,7 +147,10 @@ export const playerMachine = Machine<PlayerContext, PlayerStateSchema, PlayerEve
                 return [];
             }
             if (event.spell.effect) {
-                return assign({ effect: (_context, _event) => event.spell.effect.name });
+                return assign({
+                    effect: (_context, _event) => event.spell.effect.name,
+                    effectTurns: (_context, _event) => event.spell.effect.turns,
+                });
             }
             return [];
         }),
@@ -117,6 +158,7 @@ export const playerMachine = Machine<PlayerContext, PlayerStateSchema, PlayerEve
     guards: {
         hpZero: (context, _) => context.hp <= 0,
         flipped: (context, _) => context.effect == 'flipped',
-        effectExpired: (context, _) => context.effectTurns <= 0,
+        disarmed: (context, _) => context.effect == 'disarmed',
+        bound: (context, _) => context.effect == 'bound',
     },
 });
