@@ -7,11 +7,10 @@
 const React = require('react')
 
 exports.onRenderBody = ({ setPostBodyComponents }) => {
-    setPostBodyComponents(<iframe key="inspector" className="w-full" style={{
+    setPostBodyComponents(<iframe key="inspector" className="w-full hidden" style={{
         height: '500px',
         position: 'absolute',
         bottom: 0,
-        visibility: 'hidden',
         zIndex: 1000,
     }} data-xstate="data-xstate"/>);
 }
