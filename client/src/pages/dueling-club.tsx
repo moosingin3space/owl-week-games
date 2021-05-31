@@ -186,18 +186,15 @@ const CharacterSelectPage: React.FC<HasSend> = ({send}) => (
 
 const StartPage : React.FC<HasSend> = ({send}) => (
     <div className="grid">
-        <StaticImage src="../images/dueling-club/background.png" alt="Two wizards dueling"
-            placeholder="blurred" layout="fullWidth"
-            style={{
-                gridArea: "1/1",
-            }}/>
+        <img src="/dueling-club/background.png" width={700} height={394} style={{ gridArea: "1/1" }} className="w-full"/>
         <div className="flex flex-col items-center relative p-4"
                 style={{
                     gridArea: "1/1",
                 }}>
             <div className="flex-grow"></div>
-            <h1 className="text-4xl text-white mb-1">Welcome to Dueling Club!</h1>
+            <h1 className={`text-4xl text-black mb-1 ${duelingStyles.outlined}`}>Welcome to Dueling Club!</h1>
             <Button text={"Click to play!"} onClick={() => send({ type: 'START' })}/>
+            <div className="flex-grow"></div>
         </div>
     </div>
 )
