@@ -99,11 +99,11 @@ const CompletionPage: React.FC<Completion & HasSend> = ({victor, win, send}) => 
     <div className="grid">
         <img src="/dueling-club/bg-landscape.png" width={700} height={394} style={{ gridArea: "1/1" }} className="w-full"/>
         <div className="flex flex-col relative items-center" style={{ gridArea: "1/1" }}>
-            {victor ? <img src={`/dueling-club/${victor.name}-left.png`} width={300} height={300}/> : <span/>}
             <span className="text-xl text-center text-white">
                 { victor ? (win ? "You won!" : "Your opponent has won!") : "The duel results in a draw." }
             </span>
             <Button text={"Play again!"} onClick={() => send({ type: "AGAIN" })}/>
+            {victor ? <img src={`/dueling-club/${victor.name}-left.png`} width={300} height={300} className="mh-full"/> : <span/>}
         </div>
     </div>
 )
