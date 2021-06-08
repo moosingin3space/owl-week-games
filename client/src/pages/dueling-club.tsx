@@ -133,12 +133,15 @@ const BattlefieldPage: React.FC<BattlefieldProps> = ({current, send}) => {
         const oppHitWith = current.context.lastAiSpell?.display;
         modalComponent = (
             <div className="flex flex-col items-center p-6 bg-black text-white">
-                <span>
-                    { userHitWith ? `You were hit with ${userHitWith}.` : `Opponent missed.` }
-                </span>
-                <span>
-                    { oppHitWith ? `Opponent was hit with ${oppHitWith}.` : `You missed.` }
-                </span>
+                <div className="flex flex-row w-full">
+                    <span style={{ maxWidth: "45%" }}>
+                        { oppHitWith }
+                    </span>
+                    <div className="flex-grow"/>
+                    <span className="text-right" style={{ maxWidth: "45%" }}>
+                        { userHitWith }
+                    </span>
+                </div>
                 <div className="flex flex-row">
                     <img src={`/dueling-club/wand.gif`} width={200} height={50} style={{ transform: "scale(-1, 1)", maxWidth: "45%" }}/>
                     <img src={`/dueling-club/wand.gif`} width={200} height={50} style={{ maxWidth: "45%" }}/>
