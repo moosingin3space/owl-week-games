@@ -22,6 +22,8 @@ export interface PlayerContext {
     effect: string | null
     effectTurns: number
     accuracy: number
+
+    lastSpellUsed: Spell | null
 }
 
 export const DEFAULT_ACCURACY = 0.66;
@@ -35,7 +37,7 @@ export type PlayerEvent =
     | { type: 'ATTACK_MISSED' }
 
 export type PlayerToParentEvent =
-    | { type: 'TURN_RESOLVED', player: number, message?: string }
+    | { type: 'TURN_RESOLVED', player: number, spell: Spell | null }
     | { type: 'COMPLETION', id: number }
 
 export type PlayerState = State<PlayerContext, PlayerEvent, PlayerStateSchema>;
@@ -58,20 +60,26 @@ export const playerMachine = Machine<PlayerContext, PlayerStateSchema, PlayerEve
             entry: 'makeNormalAccuracy',
             on: {
                 ATTACK: {
-                    actions: ['computeHp', 'applyEffects'],
+                    actions: ['assignLastSpell', 'computeHp', 'applyEffects'],
                     target: 'checkHp',
                 },
-                ATTACK_MISSED: 'checkHp',
+                ATTACK_MISSED: {
+                    actions: 'nullifyLastSpell',
+                    target: 'checkHp',
+                },
             }
         },
         flipped: {
             entry: 'flipMe',
             on: {
                 ATTACK: {
-                    actions: 'computeHp',
+                    actions: ['assignLastSpell', 'computeHp'],
                     target: 'checkHp',
                 },
-                ATTACK_MISSED: 'checkHp',
+                ATTACK_MISSED: {
+                    actions: 'nullifyLastSpell',
+                    target: 'checkHp',
+                },
             },
             exit: 'checkEffect',
         },
@@ -79,10 +87,13 @@ export const playerMachine = Machine<PlayerContext, PlayerStateSchema, PlayerEve
             entry: 'disarmMe',
             on: {
                 ATTACK: {
-                    actions: 'computeHp',
+                    actions: ['assignLastSpell', 'computeHp'],
                     target: 'checkHp',
                 },
-                ATTACK_MISSED: 'checkHp',
+                ATTACK_MISSED: {
+                    actions: 'nullifyLastSpell',
+                    target: 'checkHp',
+                },
             },
             exit: 'checkEffect',
         },
@@ -90,10 +101,13 @@ export const playerMachine = Machine<PlayerContext, PlayerStateSchema, PlayerEve
             entry: 'bindMe',
             on: {
                 ATTACK: {
-                    actions: 'computeHp',
+                    actions: ['assignLastSpell', 'computeHp'],
                     target: 'checkHp',
                 },
-                ATTACK_MISSED: 'checkHp',
+                ATTACK_MISSED: {
+                    actions: 'nullifyLastSpell',
+                    target: 'checkHp',
+                },
             },
             exit: 'checkEffect',
         },
@@ -111,6 +125,7 @@ export const playerMachine = Machine<PlayerContext, PlayerStateSchema, PlayerEve
                     actions: sendParent((context, _event) => ({
                         type: 'TURN_RESOLVED',
                         player: context.id,
+                        spell: context.lastSpellUsed,
                     })),
                     target: 'conditionalTurnStart'
                 }
@@ -154,6 +169,8 @@ export const playerMachine = Machine<PlayerContext, PlayerStateSchema, PlayerEve
             }
             return [];
         }),
+        nullifyLastSpell: assign({ lastSpellUsed: (_context, _event) => null }),
+        assignLastSpell: assign({ lastSpellUsed: (_context, event) => event.spell }),
     },
     guards: {
         hpZero: (context, _) => context.hp <= 0,

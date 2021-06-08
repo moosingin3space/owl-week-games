@@ -129,12 +129,19 @@ const BattlefieldPage: React.FC<BattlefieldProps> = ({current, send}) => {
             </div>
         );
     } else if (resolvingAnimation || waitNext) {
+        const userHitWith = current.context.lastHumanSpell?.display;
+        const oppHitWith = current.context.lastAiSpell?.display;
         modalComponent = (
             <div className="flex flex-col items-center p-6 bg-black text-white">
-                <h3>Resolving...</h3>
+                <span>
+                    { userHitWith ? `You were hit with ${userHitWith}.` : `Opponent missed.` }
+                </span>
+                <span>
+                    { oppHitWith ? `Opponent was hit with ${oppHitWith}.` : `You missed.` }
+                </span>
                 <div className="flex flex-row">
-                    <img src={`/dueling-club/wand.gif`} width={200} height={50} style={{ transform: "scale(-1, 1)" }}/>
-                    <img src={`/dueling-club/wand.gif`} width={200} height={50}/>
+                    <img src={`/dueling-club/wand.gif`} width={200} height={50} style={{ transform: "scale(-1, 1)", maxWidth: "45%" }}/>
+                    <img src={`/dueling-club/wand.gif`} width={200} height={50} style={{ maxWidth: "45%" }}/>
                 </div>
                 { waitNext ? <Button text={"Next"} onClick={() => send({ type: 'NEXT_TURN' })}/> : null }
             </div>

@@ -20,6 +20,7 @@ const numPlayers = 2
 export interface BattleContext {
     players: Array<ActorRef<PlayerEvent>>;
     selectedSpells: Array<(Spell | null)>;
+    castSpells: Array<(Spell | null)>;
     resolved: Array<boolean>;
     ready: Array<boolean>;
 }
@@ -30,7 +31,7 @@ export type BattleEvent =
     | PlayerToParentEvent
 
 export type BattleToParentEvent =
-    | { type: 'BATTLE_TURN_RESOLVED' }
+    | { type: 'BATTLE_TURN_RESOLVED', userSpell: Spell | null, opponentSpell: Spell | null }
     | { type: 'BATTLE_COMPLETION', player: number }
 
 const sendAttack = (player: number, opponent: number) => pure((context: BattleContext, _event) => {
@@ -112,9 +113,14 @@ export const battleMachine = Machine<BattleContext, BattleStateSchema, BattleEve
             selectedSpells: (context, event) => (produce(context.selectedSpells, draftSpells => { draftSpells[event.player] = event.spell })),
             ready: (context, event) => (produce(context.ready, draftReady => { draftReady[event.player] = true })),
         }),
-        tellParentResolved: sendParent({ type: 'BATTLE_TURN_RESOLVED' }),
+        tellParentResolved: pure((context, _event) => sendParent({
+            type: 'BATTLE_TURN_RESOLVED',
+            userSpell: context.castSpells[0],
+            opponentSpell: context.castSpells[1],
+        })),
         markResolved: assign({
-            resolved: (context, event) => (produce(context.resolved, draftResolved => { draftResolved[event.player] = true }))
+            resolved: (context, event) => (produce(context.resolved, draftResolved => { draftResolved[event.player] = true })),
+            castSpells: (context, event) => (produce(context.castSpells, draftSpells => { draftSpells[event.player] = event.spell })),
         }),
     },
     guards: {

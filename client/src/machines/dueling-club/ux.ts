@@ -34,6 +34,9 @@ export interface UxContext {
 
     human: SpawnedActorRef<PlayerEvent> | null;
     ai: SpawnedActorRef<PlayerEvent> | null;
+
+    lastHumanSpell: Spell | null;
+    lastAiSpell: Spell | null;
 }
 
 type InternalEvent =
@@ -63,6 +66,9 @@ export const uxMachine = Machine<UxContext, UxStateSchema, UxEvent>({
 
         human: null,
         ai: null,
+
+        lastHumanSpell: null,
+        lastAiSpell: null,
     },
     states: {
         intro: {
@@ -91,8 +97,22 @@ export const uxMachine = Machine<UxContext, UxStateSchema, UxEvent>({
             on: {
                 '': {
                     actions: assign({
-                        human: (_context, _event) => spawn(playerMachine.withContext({ id: 0, hp: 100, accuracy: DEFAULT_ACCURACY, effect: null, effectTurns: 0 }), { sync: true }),
-                        ai: (_context, _event) => spawn(playerMachine.withContext({ id: 1, hp: 100, accuracy: DEFAULT_ACCURACY, effect: null, effectTurns: 0 }), { sync: true }),
+                        human: (_context, _event) => spawn(playerMachine.withContext({
+                            id: 0,
+                            hp: 100,
+                            accuracy: DEFAULT_ACCURACY,
+                            effect: null,
+                            effectTurns: 0,
+                            lastSpellUsed: null,
+                        }), { sync: true }),
+                        ai: (_context, _event) => spawn(playerMachine.withContext({
+                            id: 1,
+                            hp: 100,
+                            accuracy: DEFAULT_ACCURACY,
+                            effect: null,
+                            effectTurns: 0,
+                            lastSpellUsed: null,
+                        }), { sync: true }),
                     }),
                     target: 'battle',
                 }
@@ -107,6 +127,7 @@ export const uxMachine = Machine<UxContext, UxStateSchema, UxEvent>({
                         selectedSpells: [null, null],
                         resolved: [false, false],
                         ready: [false, false],
+                        castSpells: [null, null],
                     })
                 }
             ],
@@ -163,7 +184,13 @@ export const uxMachine = Machine<UxContext, UxStateSchema, UxEvent>({
                     on: {
                         TURN_RESOLVED: { actions: forwardTo('battle') },
                         COMPLETION: { actions: forwardTo('battle') },
-                        BATTLE_TURN_RESOLVED: 'waitNext',
+                        BATTLE_TURN_RESOLVED: {
+                            actions: assign({
+                                lastHumanSpell: (_context, event) => event.userSpell,
+                                lastAiSpell: (_context, event) => event.opponentSpell,
+                            }),
+                            target: 'waitNext'
+                        },
                         BATTLE_COMPLETION: {
                             actions: pure((_context, event) => {
                                 if (event.player == 0) {
