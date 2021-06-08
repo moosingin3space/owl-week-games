@@ -55,6 +55,15 @@ export type UxEvent =
     | PlayerToParentEvent
     | InternalEvent
 
+const chooseCharacter = (userSelected: Character) => {
+    const index = randUniform(0, characters.length-1);
+    if (characters[index].name == userSelected.name) {
+        return characters[index+1 % characters.length];
+    } else {
+        return characters[index];
+    }
+};
+
 export const uxMachine = Machine<UxContext, UxStateSchema, UxEvent>({
     id: 'ux',
     initial: 'intro',
@@ -87,7 +96,7 @@ export const uxMachine = Machine<UxContext, UxStateSchema, UxEvent>({
                 PICK_CHARACTER: {
                     actions: assign({
                         humanCharacter: (_context, event) => event.selected,
-                        aiCharacter: (_context, _event) => characters[randUniform(0, characters.length-1)],
+                        aiCharacter: (_context, event) => chooseCharacter(event.selected),
                     }),
                     target: 'preBattle',
                 },
