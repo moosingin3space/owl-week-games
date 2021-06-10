@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { useInView } from "react-intersection-observer"
 import { StaticImage } from "gatsby-plugin-image"
 import { useMachine } from "@xstate/react"
@@ -13,6 +13,17 @@ import Gauge from "../components/gauge"
 import { Character, UxEvent, UxState, uxMachine, PlayerState, characters, spells } from "../machines/dueling-club"
 
 import * as duelingStyles from "./dueling-club.module.css"
+
+const AllImages = [
+    "/dueling-club/asian-left.png",
+    "/dueling-club/brunette-left.png",
+    "/dueling-club/harry-left.png",
+    "/dueling-club/malfoy-left.png",
+    "/dueling-club/poc-1-left.png",
+    "/dueling-club/poc-2-left.png",
+    "/dueling-club/redhead-left.png",
+    "/dueling-club/wand.gif",
+];
 
 interface GameGridProps {
     field: React.ReactNode
@@ -210,6 +221,14 @@ const StartPage : React.FC<HasSend> = ({send}) => (
 )
 
 const DuelingClubPage : React.FC<{}> = () => {
+    useEffect(() => {
+        // pre-load images
+        AllImages.forEach((src) => {
+            const img = new Image();
+            img.src = src;
+        });
+    }, []);
+
     const [current, send] = useMachine(uxMachine, {
         devTools: true,
     })
