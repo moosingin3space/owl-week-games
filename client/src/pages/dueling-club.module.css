@@ -86,7 +86,11 @@
 .disarmedPlayer::after {
     content: " ";
     grid-area: 1 / 1;
-    background: rgba(128, 0, 0, 0.65);
+    background: url(/dueling-club/disarmed.png),
+        rgba(128, 0, 0, 0.65);
+    background-size: 100px 100px;
+    background-repeat: no-repeat;
+    background-position: bottom;
     border-radius: 50%;
 }
 
@@ -96,7 +100,11 @@
 .boundPlayer::after {
     content: " ";
     grid-area: 1 / 1;
-    background: rgba(77, 77, 77, 0.65);
+    background: url(/dueling-club/bound.png),
+        rgba(77, 77, 77, 0.65);
+    background-size: 100px 100px;
+    background-repeat: no-repeat;
+    background-position: bottom;
     border-radius: 50%;
 }
 
