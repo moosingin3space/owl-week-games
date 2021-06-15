@@ -1,13 +1,11 @@
-import React from "react"
-import { useStaticQuery, graphql } from "gatsby"
+import React, { useEffect } from "react"
 import { useMachine } from "@xstate/react"
 
-import Img from "gatsby-image"
-
-import Layout from "../components/layout"
+import Layout, { ScrollType } from "../components/layout"
 import SEO from "../components/seo"
 import Button from "../components/button"
 import Attribution from "../components/attribution"
+import Scroller from "../components/scroller"
 
 import { quizMachine, QuizEvent } from "../machines/quizMachine"
 import { Question, Answer, results } from "../machines/quizQuestions"
@@ -18,6 +16,7 @@ interface HasSend {
 
 interface MaybeHasClasses {
     extraClasses?: Array<string>
+    style?: React.CSSProperties
 }
 
 type QuestionProps = {
@@ -29,7 +28,7 @@ type ResultProps = {
     result: string
 }
 
-const Column : React.FC<MaybeHasClasses> = ({extraClasses, children}) => {
+const Column : React.FC<MaybeHasClasses> = ({extraClasses, style, children}) => {
     let classes = ['flex', 'flex-col', 'items-center'];
     if (extraClasses) {
         for (const cl of extraClasses) {
@@ -37,36 +36,26 @@ const Column : React.FC<MaybeHasClasses> = ({extraClasses, children}) => {
         }
     }
     return (
-        <section className={classes.join(' ')}>
+        <section className={classes.join(' ')} style={style}>
             {children}
         </section>
     )
 }
 
 const QuestionRoot : React.FC<{}> = ({children}) => (
-    <section className="flex flex-col items-center justify-center md:flex-row">
+    <section
+        className="flex flex-col items-center justify-center md:flex-row"
+    >
         {children}
     </section>
 )
 
 const StartPage : React.FC<HasSend> = ({send}) => {
-    const data = useStaticQuery(graphql`
-      query {
-        patronusBgImage: file(relativePath: { eq: "patronus-quiz/background.jpg" }) {
-            childImageSharp {
-                fixed(width: 450, height: 280) {
-                    ...GatsbyImageSharpFixed
-                }
-            }
-        }
-      }
-    `)
-
     return (
         <Column>
             <h1 className="text-4xl">Choose your Patronus!</h1>
             <div className="flex flex-col items-center">
-                <Img fixed={data.patronusBgImage.childImageSharp.fixed} />
+                <img src="/patronus-quiz/background.jpg" width={450} height={400} className="w-full"/>
                 <Attribution
                     name={"La Luz Reflejo Resumen"}
                     url={"https://pixabay.com/es/illustrations/la-luz-reflejo-resumen-llamarada-1330837/"}
@@ -90,10 +79,10 @@ const QuestionPage : React.FC<HasSend & QuestionProps> = ({send, question, selec
     return (
         <QuestionRoot>
             <Column>
-                <img src={question.image} width={450} height={450}/>
+                <img src={question.image} width={450} height={450} style={{ maxWidth: "100%", height: "auto" }}/>
                 { question.attribution ? <Attribution {...question.attribution}/> : null }
             </Column>
-            <Column extraClasses={["md:px-8 w-96 max-w-full"]}>
+            <Column extraClasses={["md:px-8 md:w-96 max-w-full"]}>
                 <h3 className="text-2xl">{question.title}</h3>
                 <ul className="w-full">
                     {question.answers.map((answer) => {
@@ -134,7 +123,7 @@ const ResultPage : React.FC<HasSend & ResultProps> = ({send, result}) => {
                 <img src={res!.image} width={450} height={450}/>
                 { res!.attribution ? <Attribution {...res!.attribution}/> : null }
             </Column>
-            <Column extraClasses={["md:px-8 w-96 max-w-full"]}>
+            <Column extraClasses={["md:px-8 md:w-96 max-w-full"]}>
                 <p>{description}</p>
                 <Button text="Play again!" onClick={() => send({ type: 'AGAIN' })}/>
             </Column>
@@ -167,7 +156,7 @@ const PatronusQuizPage : React.FC<{}> = () => {
     }
 
     return (
-        <Layout>
+        <Layout scrollType={ScrollType.FullPage}>
             <SEO title="Patronus Quiz" />
             {component}
         </Layout>

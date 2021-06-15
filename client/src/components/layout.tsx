@@ -11,11 +11,17 @@ import { useStaticQuery, graphql } from "gatsby"
 import Header from "./header"
 import "./layout.css"
 
-interface LayoutProps {
-    scrollBody?: boolean
+export enum ScrollType {
+    FullPage = "full-page",
+    Main = "main",
+    Hidden = "hidden",
 }
 
-const Layout : React.FC<LayoutProps> = ({ scrollBody, children }) => {
+interface LayoutProps {
+    scrollType?: ScrollType
+}
+
+const Layout : React.FC<LayoutProps> = ({ scrollType, children }) => {
   const data = useStaticQuery(graphql`
     query SiteTitleQuery {
       site {
@@ -26,10 +32,18 @@ const Layout : React.FC<LayoutProps> = ({ scrollBody, children }) => {
     }
   `)
 
+  let overflowName = '';
+  if (scrollType == ScrollType.Main) {
+      overflowName = 'overflow-y-scroll';
+  }
+  if (scrollType == ScrollType.Hidden) {
+      overflowName = 'overflow-y-hidden';
+  }
+
   return (
       <div className="h-full layoutRoot">
         <Header siteTitle={data.site.siteMetadata?.title || `Title`} />
-        <main className={`container h-full mx-auto px-4 pt-3 bg-gray-200 ${scrollBody ? 'overflow-y-scroll' : 'overflow-y-hidden'}`}>
+        <main className={`container h-full mx-auto px-4 pt-3 bg-gray-200 ${overflowName}`}>
             {children}
         </main>
         <footer className="container mx-auto bg-gray-200 pt-8 italic">
@@ -46,7 +60,7 @@ const Layout : React.FC<LayoutProps> = ({ scrollBody, children }) => {
 }
 
 Layout.defaultProps = {
-    scrollBody: true
+    scrollType: ScrollType.Main
 }
 
 export default Layout

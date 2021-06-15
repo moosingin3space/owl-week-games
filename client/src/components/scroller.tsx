@@ -6,15 +6,17 @@ import * as styles from "./scroller.module.css"
 interface ScrollerProps {
     className?: string
     style?: React.CSSProperties
+    topThreshold?: number
+    bottomThreshold?: number
 }
 
-const Scroller: React.FC<ScrollerProps> = ({className, style, children}) => {
+const Scroller: React.FC<ScrollerProps> = ({className, style, topThreshold, bottomThreshold, children}) => {
     const { ref: topRef, inView: topInView } = useInView({
         initialInView: true,
-        threshold: 0.5,
+        threshold: topThreshold || 0.5,
     });
     const { ref: bottomRef, inView: bottomInView } = useInView({
-        threshold: 0.5,
+        threshold: bottomThreshold || 0.5,
     });
 
     const numChildren = React.Children.count(children);

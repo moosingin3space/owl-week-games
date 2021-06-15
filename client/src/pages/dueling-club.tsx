@@ -1,8 +1,7 @@
 import React, { useEffect } from "react"
-import { StaticImage } from "gatsby-plugin-image"
 import { useMachine } from "@xstate/react"
 
-import Layout from "../components/layout"
+import Layout, { ScrollType } from "../components/layout"
 import SEO from "../components/seo"
 import Button from "../components/button"
 import Modal from "../components/modal"
@@ -159,8 +158,7 @@ const BattlefieldPage: React.FC<BattlefieldProps> = ({current, send}) => {
                 {modalComponent}
             </Modal>
         </GameGrid>
-    )
-}
+    ) }
 
 const CharacterDisplay: React.FC<Character & HasSend> = ({ name, send }) => {
     return (
@@ -209,15 +207,15 @@ const DuelingClubPage : React.FC<{}> = () => {
         devTools: true,
     })
     let component = <h3>Not implemented</h3>;
-    let scrollBody = true;
+    let scrollType = ScrollType.Main;
     if (current.matches('intro')) {
         component = <StartPage send={send}/>;
     } else if (current.matches('config')) {
         component = <CharacterSelectPage send={send}/>;
-        scrollBody = false;
+        scrollType = ScrollType.Hidden;
     } else if (current.matches('battle')) {
         component = <BattlefieldPage send={send} current={current}/>;
-        scrollBody = false;
+        scrollType = ScrollType.Hidden;
     } else if (current.matches('win')) {
         component = <CompletionPage send={send} victor={current.context.humanCharacter} win={true}/>;
     } else if (current.matches('loss')) {
@@ -227,7 +225,7 @@ const DuelingClubPage : React.FC<{}> = () => {
     }
 
     return (
-        <Layout scrollBody={scrollBody}>
+        <Layout scrollType={scrollType}>
             <SEO title="Dueling Club" />
             {component}
         </Layout>
