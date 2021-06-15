@@ -5,7 +5,7 @@ export type AttributionProps = {
     url: string,
     author: {
         name: string,
-        url: string,
+        url?: string,
     },
     license: {
         name: string,
@@ -18,7 +18,9 @@ const Attribution : React.FC<AttributionProps> = (props) => (
     <p className="text-xs">
         <a href={props.url}>{props.name}</a>
         {` by `}
-        <a href={props.author.url}>{props.author.name}</a>
+        { props.author.url 
+            ?  <a href={props.author.url}>{props.author.name}</a>
+            : props.author.name }
         {` is licensed under `}
         <a href={props.license.url}>{props.license.name}</a>.
         { props.modifications ? <span className="italic">{` `}{props.modifications}.</span> : ``}

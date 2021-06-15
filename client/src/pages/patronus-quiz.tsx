@@ -52,9 +52,9 @@ const QuestionRoot : React.FC<{}> = ({children}) => (
 const StartPage : React.FC<HasSend> = ({send}) => {
     const data = useStaticQuery(graphql`
       query {
-        patronusBgImage: file(relativePath: { eq: "patronus-quiz/background.png" }) {
+        patronusBgImage: file(relativePath: { eq: "patronus-quiz/background.jpg" }) {
             childImageSharp {
-                fixed(width: 450, height: 450) {
+                fixed(width: 450, height: 280) {
                     ...GatsbyImageSharpFixed
                 }
             }
@@ -68,17 +68,16 @@ const StartPage : React.FC<HasSend> = ({send}) => {
             <div className="flex flex-col items-center">
                 <Img fixed={data.patronusBgImage.childImageSharp.fixed} />
                 <Attribution
-                    name={"Boo!"}
-                    url={"https://www.sketchport.com/drawing/3270929/boo"}
+                    name={"La Luz Reflejo Resumen"}
+                    url={"https://pixabay.com/es/illustrations/la-luz-reflejo-resumen-llamarada-1330837/"}
                     author={{
-                        name: "Aya Mulder",
-                        url: "https://www.sketchport.com/user/1148026/aya-mulder"
+                        name: "Gerd Altmann",
+                        url: "https://pixabay.com/es/users/geralt-9301/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=1330837"
                     }}
                     license={{
-                        name: "CC-BY 2.0",
-                        url: "https://creativecommons.org/licenses/by/4.0/?ref=ccsearch&atype=html"
+                        name: "Pixabay License",
+                        url: "https://pixabay.com/es/service/license/"
                     }}
-                    modifications="Cropped from original"
                 />
             </div>
             <p className="text-xl">Answer the questions to find your Patronus animal!</p>
@@ -162,6 +161,7 @@ const PatronusQuizPage : React.FC<{}> = () => {
                 runningCount = count
                 runningAnswer = answer
             }
+            // TODO what if a tie
         })
         component = <ResultPage send={send} result={runningAnswer!}/>
     }

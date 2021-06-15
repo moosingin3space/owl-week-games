@@ -20,184 +20,169 @@ export interface Result {
 
 export const questions : Array<Question> = [
     {
-        'title': "You are being followed by a hooded stranger, you:",
-        'image': '/patronus-quiz/hoodie.jpg',
+        'title': "You are playing your arch-rival in Quidditch. You see a rogue Bludger headed for the other team's Chaser. Do you:",
+        'image': '/patronus-quiz/Quidditch_pitch.jpg',
         'attribution': {
-            'name': '194/365 Hoodie',
-            'url': 'https://www.flickr.com/photos/7232686@N03/3967113235',
+            'name': 'Quidditch pitch.jpg',
+            'url': 'https://upload.wikimedia.org/wikipedia/commons/d/d9/Quidditch_pitch.jpg',
             'author': {
-                'name': 'mek22',
-                'url': 'https://www.flickr.com/photos/7232686@N03'
+                'name': 'Dinosaur918',
             },
             'license': {
-                'name': 'CC-BY-NC-SA 2.0',
-                'url': 'https://creativecommons.org/licenses/by-nc-sa/2.0/?ref=ccsearch&atype=html'
-            },
-            "modifications": "Cropped from original"
+                'name': 'CC-BY-SA 4.0',
+                'url': 'https://creativecommons.org/licenses/by-sa/4.0/?ref=ccsearch&atype=html'
+            }
         },
         'answers': [
             {
-                'text': "Run",
-                'point': 'dog'
+                'text': "Silently cheer your good luck.",
+                'point': 'cat'
             },
             {
-                'text': `Yell at the figure, "Take off, dude"`,
+                'text': "Scream at the Chaser to look out.",
                 'point': 'swan'
             },
             {
-                'text': "Tell the figure your best joke",
+                'text': "Smack the Bludger out of the way.",
+                'point': 'stag'
+            },
+            {
+                'text': "Go about your own business.",
                 'point': 'otter'
             },
             {
-                'text': "Ignore the figure and go about your business",
-                'point': 'cat'
-            },
-            {
-                'text': `Confront the figure -- "Are you following me?"`,
-                'point': 'stag'
+                'text': "Tell the nearest member of the other team.",
+                'point': 'dog'
             }
         ]
     },
     {
-        'title': "Your favourite activity over the holiday is:",
-        'image': '/patronus-quiz/holidays.jpg',
-        'attribution': {
-            'name': 'Summer',
-            'url': 'https://www.flickr.com/photos/52645838@N00/35593986991',
-            'author': {
-                'name': 'simplethrill',
-                'url': 'https://www.flickr.com/photos/52645838@N00'
-            },
-            'license': {
-                'name': 'CC-BY-NC-ND 2.0',
-                'url': 'https://creativecommons.org/licenses/by-nc-nd/2.0/?ref=ccsearch&atype=html'
-            },
-            "modifications": "Cropped from original"
-        },
+        'title': "At an invitation-only dinner with your favorite professor, you are served a pudding that you absolutely can't stand. Do you:",
+        'image': '/patronus-quiz/pudding.jpg',
         'answers': [
             {
-                'text': "Writing in a journal",
-                'point': 'swan',
+                'text': "Eat it anyway.",
+                'point': 'dog',
             },
             {
-                'text': "Rounding up Death Eaters",
-                'point': 'dog'
-            },
-            {
-                'text': "Searching for dragon eggs",
-                'point': 'stag'
-            },
-            {
-                'text': "Sleeping",
-                'point': 'cat'
-            },
-            {
-                'text': "Partying",
-                'point': 'otter'
-            }
-        ]
-    },
-    {
-        'title': "Your favourite subject in school is:",
-        'image': '/patronus-quiz/castle.jpg',
-        'attribution': {
-            'name': 'Castle',
-            'url': 'https://www.flickr.com/photos/26234859@N07/5982384567',
-            'author': {
-                'name': 'milan.boers',
-                'url': 'https://www.flickr.com/photos/26234859@N07'
-            },
-            'license': {
-                'name': 'CC-BY 2.0',
-                'url': 'https://creativecommons.org/licenses/by/2.0/?ref=ccsearch&atype=html'
-            },
-            "modifications": "Cropped from original"
-        },
-        'answers': [
-            {
-                'text': "Divination",
-                'point': 'cat'
-            },
-            {
-                'text': "Potions",
+                'text': "Try to use your napkin to hide some.",
                 'point': 'otter'
             },
             {
-                'text': "Transfiguration",
-                'point': 'swan'
-            },
-            {
-                'text': "Care of Magical Creatures",
-                'point': 'dog'
-            },
-            {
-                'text': "Defense Against the Dark Arts",
-                'point': 'stag'
-            }
-        ]
-    },
-    {
-        'title': "Your ideal career is:",
-        'image': '/patronus-quiz/career.jpg',
-        'attribution': {
-            'name': 'Career',
-            'url': 'https://www.flickr.com/photos/144008357@N08/45854121975',
-            'author': {
-                'name': 'Got Credit',
-                'url': 'https://www.flickr.com/photos/144008357@N08'
-            },
-            'license': {
-                'name': 'CC-BY 2.0',
-                'url': 'https://creativecommons.org/licenses/by/2.0/?ref=ccsearch&atype=html'
-            },
-            "modifications": "Cropped from original"
-        },
-        'answers': [
-            {
-                'text': "Auror",
+                'text': "Claim to be full.",
                 'point': 'cat'
             },
             {
-                'text': "Professor",
+                'text': `Say "I'm sorry, I really don't like this pudding."`,
                 'point': 'stag'
             },
             {
-                'text': "Dragon keeper",
-                'point': 'otter'
-            },
-            {
-                'text': "Professional Quidditch player",
-                'point': 'dog'
-            },
-            {
-                'text': "Minister of Magic",
+                'text': "Make an excuse to leave early.",
                 'point': 'swan'
             }
         ]
     },
     {
-        'title': "Who do you most idolize?",
-        'image': '/patronus-quiz/idol.jpg',
+        'title': "It's after curfew, but you really want to get some treats from the Hogwarts kitchen. Do you:",
+        'image': '/patronus-quiz/hungry.jpg',
         'answers': [
             {
-                'text': "Professor Dumbledore",
-                'point': 'cat'
-            },
-            {
-                'text': "Professor Trelawney",
-                'point': 'otter'
-            },
-            {
-                'text': "Professor Snape",
-                'point': 'swan'
-            },
-            {
-                'text': "Dobby",
+                'text': "Go to bed hungry.",
                 'point': 'dog'
             },
             {
-                'text': "Lily Potter",
+                'text': "Call Dobby to you and ask him to get them.",
+                'point': 'swan'
+            },
+            {
+                'text': "Steal some snacks from your roommate's locker.",
+                'point': 'cat'
+            },
+            {
+                'text': "Use the Marauder's Map and your Invisibility Cloak to get to the kitchen.",
                 'point': 'stag'
+            },
+            {
+                'text': "Sneak out of the common room and search for the kitchen.",
+                'point': 'otter'
+            }
+        ]
+    },
+    {
+        'title': "A classmate of yours is in need of new robes. They are broke and too proud to ask to borrow money. Do you:",
+        'image': '/patronus-quiz/robes.jpg',
+        'answers': [
+            {
+                'text': "Get them new robes and have them delivered by Owl Post.",
+                'point': 'stag'
+            },
+            {
+                'text': "Give them a set of yours that you don't use.",
+                'point': 'cat'
+            },
+            {
+                'text': "Patch up their old robes.",
+                'point': 'swan'
+            },
+            {
+                'text': "Tease them about their robes' condition.",
+                'point': 'otter'
+            },
+            {
+                'text': "Accidentally light their robes on fire in Potions so they'll have to get new ones.",
+                'point': 'dog'
+            }
+        ]
+    },
+    {
+        'title': "You missed the Hogwarts Express! What mode of transportation would you try next to get to school?",
+        'image': '/patronus-quiz/flying-car.jpg',
+        'answers': [
+            {
+                'text': "Broomstick",
+                'point': 'swan'
+            },
+            {
+                'text': "Magical Car",
+                'point': 'dog'
+            },
+            {
+                'text': "Knight Bus",
+                'point': 'cat'
+            },
+            {
+                'text': "Thestral",
+                'point': 'otter'
+            },
+            {
+                'text': "Dragon",
+                'point': 'stag'
+            }
+        ]
+    },
+    {
+        'title': "You have the chance to take any one candy from Honeydukes that you want. Which would you choose?",
+        'image': '/patronus-quiz/sweets.jpg',
+        'answers': [
+            {
+                'text': "Acid Pops",
+                'point': 'cat'
+            },
+            {
+                'text': "Peppermint Toads",
+                'point': 'stag'
+            },
+            {
+                'text': "Chocolate Frogs",
+                'point': 'dog'
+            },
+            {
+                'text': "Fizzing Whizzbees",
+                'point': 'swan'
+            },
+            {
+                'text': "Jelly Slugs",
+                'point': 'otter'
             }
         ]
     }
