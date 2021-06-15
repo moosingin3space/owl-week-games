@@ -1,5 +1,4 @@
 import React, { useEffect } from "react"
-import { useInView } from "react-intersection-observer"
 import { StaticImage } from "gatsby-plugin-image"
 import { useMachine } from "@xstate/react"
 
@@ -9,6 +8,7 @@ import Button from "../components/button"
 import Modal from "../components/modal"
 import PercentageCircle from "../components/percentage-circle"
 import Gauge from "../components/gauge"
+import Scroller from "../components/scroller"
 
 import { Character, UxEvent, UxState, uxMachine, PlayerState, characters, spells } from "../machines/dueling-club"
 
@@ -31,38 +31,14 @@ interface GameGridProps {
     style?: React.CSSProperties
 }
 const GameGrid: React.FC<GameGridProps> = ({field, className, style, children}) => {
-    const { ref: topRef, inView: topInView } = useInView({
-        initialInView: true,
-        threshold: 0.5,
-    })
-    const { ref: bottomRef, inView: bottomInView } = useInView({
-        threshold: 0.5,
-    })
-
-    const numChildren = React.Children.count(children)
-    const taggedChildren = React.Children.map(children, (child, index) => {
-        if (index == 0) {
-            return (<div ref={topRef}>{child}</div>)
-        }
-        if (index == numChildren-1) {
-            return (<div ref={bottomRef}>{child}</div>)
-        }
-        // in all other cases, pass the child down
-        return child
-    })
-
     return (
         <div className={duelingStyles.gameGrid}>
             <div className={duelingStyles.gameField}>
                 {field}
             </div>
-            <div className={duelingStyles.gameControl}>
-                <div className={`${duelingStyles.scrollBox} ${className ? className : ''}`} style={style}>
-                    {taggedChildren}
-                </div>
-                {topInView ? null : <div className={duelingStyles.scrollUpIcon} aria-hidden={true}/>}
-                {bottomInView ? null : <div className={duelingStyles.scrollDownIcon} aria-hidden={true}/>}
-            </div>
+            <Scroller className={className} style={style}>
+                {children}
+            </Scroller>
         </div>
     )
 }

@@ -16,66 +16,6 @@
     padding-right: 0.1em;
 }
 
-.gameControl {
-    height: 100%;
-    overflow-y: hidden;
-
-    display: grid;
-    grid-template-columns: 1fr 2em 1fr;
-    grid-template-rows: 2em 1fr 2em;
-}
-
-.gameControl > .scrollBox {
-    overflow-y: auto;
-    height: 100%;
-
-    grid-area: 1 / 1 / span 3 / span 3;
-}
-
-.gameControl > .scrollUpIcon {
-    border: solid 2em transparent;
-    border-top-color: white;
-    color: white;
-    height: 0;
-    opacity: 0;
-    pointer-events: none;
-    text-align: center;
-    transform: scaleY(-1.0) translate(-25%, +50%);
-    transition: all .2s ease-out;
-    width: 0;
-
-    grid-area: 1 / 2 / span 1 / span 1;
-
-    animation: flash 1.5s infinite linear;
-}
-
-.gameControl > .scrollDownIcon {
-    border: solid 2em transparent;
-    border-top-color: white;
-    color: white;
-    height: 0;
-    opacity: 0;
-    pointer-events: none;
-    text-align: center;
-    transform: translate(-25%, 0);
-    transition: all .2s ease-out;
-    width: 0;
-
-    grid-area: 3 / 2 / span 1 / span 1;
-
-    animation: flash 1.5s infinite linear;
-}
-
-@keyframes flash {
-    0%, 100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: .2;
-    }
-}
-
 .flippedPlayer {
     transform: scaleY(-1.0);
 }
