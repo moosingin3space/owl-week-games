@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+body {
+    background-color: #111111;
+    color: #454545;
+    line-height: 1.4;
+}
+
+a {
+    color: #0077aa;
+}
+
+@layer base {
+    /* purgecss ignore */
+    #___gatsby {
+        @apply h-full;
+    }
+
+    /* purgecss ignore */
+    #gatsby-focus-wrapper {
+        @apply h-full;
+    }
+}
+
+.layoutRoot {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 69px 1fr 80px;
+}

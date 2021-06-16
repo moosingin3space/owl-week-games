@@ -1,0 +1,103 @@
+.questionTitle {
+    font-size: 2rem;
+    min-height: 4rem;
+    font-family: 'Merienda', cursive;
+    margin-bottom: 0;
+}
+
+.question-and-answer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@media (min-width: 1000px) {
+    section[data-question] {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    h3.questionTitle {
+        max-width: 500px;
+    }
+
+    ul.choice {
+        width: 350px;
+    }
+}
+
+.image-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 95%;
+    max-height: 450px;
+    margin-top: 0.2em;
+}
+
+ul.choice {
+    list-style-type: none;
+    padding: 0;
+    margin: 1em;
+    max-width: 100%;
+}
+
+ul.choice > li {
+    display: flex;
+    flex-direction: row;
+    margin: 3px;
+    border-radius: 5px;
+    padding: 1px;
+    border: 1px solid black;
+    word-wrap: break-word;
+    width: inherit;
+}
+
+ul.choice > li > label {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    cursor: pointer;
+    flex-grow: 1;
+    font-size: 1.4rem;
+}
+
+ul.choice label {
+    display: inline-block;
+    text-align: center;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+ul.choice input[type="radio"] {
+    display: none;
+}
+
+ul.choice input[type="radio"]:checked+label {
+    background-color: yellow;
+    font-weight: bold;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+ul.choice > li:hover {
+    background-color: #eeeeee;
+}
+
+p.text {
+    max-width: 550px;
+    padding: 0 0.3em;
+    font-size: 1.5rem;
+}
+
+.questionTitle {
+    font-size: 1.5rem;
+    text-align: center;
+    padding: 0 2em;
+}

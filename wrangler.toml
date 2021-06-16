@@ -2,7 +2,7 @@ name = "owl-week-games"
 type = "webpack"
 
 [site]
-bucket = "./out"
+bucket = "./client/public"
 entry-point = "workers-site"
 
 [env.production]

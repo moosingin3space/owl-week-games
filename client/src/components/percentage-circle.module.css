@@ -1,0 +1,60 @@
+.circleWrap {
+    margin: 50px auto;
+    width: 164px;
+    height: 164px;
+    border-radius: 50%;
+}
+
+.circleBasic {
+    width: 164px;
+    height: 164px;
+    position: absolute;
+    border-radius: 50%;
+}
+
+.circleMask {
+    composes: circleBasic;
+    clip: rect(0px, 164px, 1640px, 82px);
+}
+
+.circleMaskFill {
+    composes: circleBasic;
+    clip: rect(0px, 82px, 164px, 0px);
+}
+
+.insideCircle {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    background: #fff;
+    margin-top: 18px;
+    margin-left: 18px;
+    position: absolute;
+    z-index: 100;
+
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    align-items: center;
+}
+
+.hasChildren {
+    align-items: unset;
+}
+
+.insideCircle > * {
+    grid-area: 1 / 1;
+}
+
+.insideCircle > span {
+    display: inline-block;
+    font-weight: 700;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.insideCircle.hasChildren > span {
+    margin-top: 10px;
+    color: white;
+    -webkit-text-stroke: 1px black;
+}

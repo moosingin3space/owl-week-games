@@ -5,7 +5,7 @@ let
 in
 pkgs.mkShell {
   buildInputs = [
-    owlmaker
     pkgs.wrangler
+    pkgs.nodejs-14_x
   ];
 }

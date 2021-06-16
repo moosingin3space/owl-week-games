@@ -1,0 +1,55 @@
+/* Mobile portrait layout */
+.gameGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 250px 1fr;
+    height: 100%;
+}
+
+.gameField {
+    background-image: url(/dueling-club/bg-landscape.png);
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 250px;
+    padding-left: 0.1em;
+    padding-right: 0.1em;
+}
+
+.flippedPlayer {
+    transform: scaleY(-1.0);
+}
+
+.disarmedPlayer {
+}
+
+.disarmedPlayer::after {
+    content: " ";
+    grid-area: 1 / 1;
+    background: url(/dueling-club/disarmed.png),
+        rgba(128, 0, 0, 0.65);
+    background-size: 100px 100px;
+    background-repeat: no-repeat;
+    background-position: bottom;
+    border-radius: 50%;
+}
+
+.boundPlayer {
+}
+
+.boundPlayer::after {
+    content: " ";
+    grid-area: 1 / 1;
+    background: url(/dueling-club/bound.png),
+        rgba(77, 77, 77, 0.65);
+    background-size: 100px 100px;
+    background-repeat: no-repeat;
+    background-position: bottom;
+    border-radius: 50%;
+}
+
+.outlined {
+    text-shadow: #fff 0px 0px 1px, #fff 0px 0px 1px, #fff 0px 0px 1px,
+                 #fff 0px 0px 1px, #fff 0px 0px 1px, #fff 0px 0px 1px;
+
+}
