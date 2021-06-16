@@ -6,7 +6,10 @@
 
 const React = require('react')
 
-exports.onRenderBody = ({ setPostBodyComponents }) => {
+exports.onRenderBody = ({ setHeadComponents, setPostBodyComponents }) => {
+    setHeadComponents([
+        <script key="analytics" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={`{"token": "9ee8b92699f54957b53f50fd88eed035"}`} defer/>
+    ]);
     setPostBodyComponents(<iframe key="inspector" className="w-full hidden" style={{
         height: '500px',
         position: 'absolute',
