@@ -14,7 +14,7 @@ jobs:
                   name: moosingin3space
                   authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
             - run: nix-shell --run "script/build-static-site.sh"
-            - uses: actions/upload-artifact@v2
+            - uses: actions/upload-artifact@v3
               with:
                   name: out
                   path: client/public
